@@ -1,8 +1,8 @@
-checkOn <- tabItem(tabName = "checkOn",
+menu_row <- tabItem(tabName = "row",
                     fluidRow(
                       column(width = 4,
                              box(
-                               title = "checkOn", width = NULL, status = "primary",
+                               title = "row", width = NULL, solidHeader = TRUE, status = "primary",
                                "Box content"
                              ),
                              box(
@@ -10,34 +10,38 @@ checkOn <- tabItem(tabName = "checkOn",
                                "Box content"
                              ),
                              box(
-                               width = NULL, background = "black",
-                               "A box with a solid black background"
+                               title = "Title 1", width = NULL, solidHeader = TRUE, status = "primary",
+                               "Box content"
                              )
                       ),
                       
                       column(width = 4,
                              box(
-                               status = "warning", width = NULL,
+                               title = "Title 1", width = NULL, solidHeader = TRUE, status = "primary",
                                "Box content"
                              ),
                              box(
-                               title = "Title 3", width = NULL, solidHeader = TRUE, status = "warning",
+                               title = "Title 1", width = NULL, solidHeader = TRUE, status = "primary",
                                "Box content"
                              ),
                              box(
-                               title = "Title 5", width = NULL, background = "light-blue",
-                               "A box with a solid light-blue background"
+                               title = "Title 1", width = NULL, solidHeader = TRUE, status = "primary",
+                               "Box content"
                              )
                       ),
                       
                       column(width=4,
                              box(
-                               title = "Title 2", width = NULL, solidHeader = TRUE,
+                               title = "Title 1", width = NULL, solidHeader = TRUE, status = "primary",
                                "Box content"
                              ),
                              box(
-                               title = "Title 6", width = NULL, background = "maroon",
-                               "A box with a solid maroon background"
+                               title = "Title 1", width = NULL, solidHeader = TRUE, status = "primary",
+                               "Box content"
+                             ),
+                             box(
+                               title = "Title 1", width = NULL, solidHeader = TRUE, status = "primary",
+                               "Box content"
                              )
                       )
                     )
