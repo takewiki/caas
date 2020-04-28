@@ -2,8 +2,10 @@
 
 #shinyserver start point----
  shinyServer(function(input, output,session) {
+    
+    #00-基础框设置-------------
     #读取用户列表
-    user_base <- getUsers(conn,app_id)
+    user_base <- getUsers(conn_be,app_id)
     
 
    
@@ -129,7 +131,7 @@
       req(credentials()$user_auth)
       
       user_detail <-function(fkey){
-         res <-tsui::userQueryField(conn = conn,app_id = app_id,user =user_info()$Fuser,key = fkey)
+         res <-tsui::userQueryField(conn = conn_be,app_id = app_id,user =user_info()$Fuser,key = fkey)
          return(res)
       } 
         
@@ -188,7 +190,325 @@
    
 
    
+  #01-功能模板设置---------- 
    
+   
+   #1.1获取消息-----
+   msg <- var_text('scp_mgsinput')
+   
+   
+   #1.1.1获取车型选项-------
+   
+   #添加内容
+   output$sel_carType_placeHolder <- renderUI({
+      selectInput("sel_carType", "业务对象设置:",
+                  getCarType(),selected = '发现运动版')
+      
+      
+   }
+   )
+   
+   
+   
+   
+   
+   #1.2添加业务对象-------
+   msg2 <-reactive({
+      msg <- msg()
+      #Sys.sleep(20)
+      if(is.null(input$sel_carType)){
+         var_type <-'发现运动版'
+      }else{
+         var_type <-input$sel_carType
+      }
+      
+      res <- tsdo::str_add(msg,var_type)
+      return(res)
+   })
+   
+   
+   #1.3设置相似问-----------
+   ques_tip <- reactive({
+      keyword <-msg2()
+      res <- ai_tip(keyword,3)
+      #print(res)
+      res <- unique(c(keyword,res))
+      res <-vect_as_list(res)
+      #print(res)
+      return(res)
+      
+      
+   })
+   #1.3.1设置相似问结果显示-----
+   output$scp_tip <- renderUI({
+      mdl_ListChoose1(id='scp_mgsinput3',label = '相似问提示',choiceNames = ques_tip(),choiceValues = ques_tip(),selected = msg2())
+   })
+   
+   #1.3.2 获取用户选择--------
+   
+   msg_input_raw3 <-var_ListChoose1('scp_mgsinput3')
+   msg3 <- reactive({
+      res <- msg_input_raw3()
+      #print(res)
+      return(res)
+   })
+   
+   
+   #***1.3.3记录用户问题--------
+   csp_FQuesText <-msg3
+   
+   
+   
+   
+   
+   
+   
+   #1.4打印消息-----------
+   output$scp_msginput2 <- renderPrint({
+      cat(msg3())
+   })
+   
+   #针对消息进行处理
+   
+   #1.5查询知识库--------
+   data <- eventReactive(input$scp_submit,{
+      keyword <- msg3()
+      res =ai2(keyword,3,0.75,0.85)
+      # print(res)
+      #分情况进行情况
+      return(res)
+      
+   })
+   
+   
+   
+   
+   #1.6提交服务器---------
+   observeEvent(input$scp_submit,{
+      #处理相关内容
+      #加载相关内容
+      req(credentials()$user_auth)
+      
+      res <- data()
+      print('知识库查询内容')
+      print(res)
+      type = res$type
+      answ = res$answ
+      
+      #choiceValue = answ$Answ
+      #针对确认问题的处理
+      if (type == 'A'){
+         #显示系统结果
+         # run_print('msg_print',answ)
+         output$msg_print <- renderPrint({
+            cat(answ$FAnsw[1])
+         })
+         
+         output$scp_res_ph <-renderUI({
+            #info = paste(answ,input$msg_sale,sep="\n")
+            textAreaInput('scp_res',label = '消息输出编辑框',value = answ$FAnsw[1],rows = 3)
+         })
+         
+         #写入客服日志
+         
+         
+         icLogUpload(conn=conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = answ,index = 1,type = type)
+         #写入AI查询日志
+         queryLog_upload(conn = conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = answ)
+         
+         
+         
+         
+      }else if(type =='B'){
+         updateTabsetPanel(session, "tabset1",
+                           selected = "人工审核")
+         choiceData = tsdo::vect_as_list(answ$FQues)
+         output$audit_placeHolder <-renderUI({
+            mdl_ListChoose1('audit_ques','获取知识库问题:',
+                            choiceNames = choiceData,
+                            choiceValues =list(1,2,3),selected = 1 )
+            
+         })
+         
+         
+         
+      }else if (type=='C'){
+         updateTabsetPanel(session, "tabset1",
+                           selected = "内部支持提交")
+         ques_commit(FQues = msg2())
+         
+         #写入操作日志
+         icLogUpload(conn=conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = answ,index = 1,type = type)
+         #写入查询日志
+         queryLog_upload(conn = conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = answ)
+         #提示框
+         shinyalert::shinyalert("友情提示!", '已提交内部支持!请耐心等待或紧急催单', type = "info")
+         
+         
+         
+      }else{
+         print('error')
+      }
+      
+      
+      
+      
+      
+   })
+   
+   
+   
+   
+   #1.6.1 显示答案审核消息，用于预览，不是用户的真正选择-----------------
+   
+   
+   output$mannal_showAnswer <- renderPrint({
+      res <-data()
+      #print(res$answ$)
+      type = res$type
+      value = var_ListChoose1('audit_ques')
+      #print(value)
+      #print(value())
+      
+      if(type == 'B'){
+         cat(res$answ$FAnsw[as.integer(value())])
+         
+      }else{
+         print('其他')
+      }
+      
+      
+   })
+   
+   
+   #复制消息到人工审核
+   output$show_msg2_ph <- renderPrint({
+      cat(msg())
+   })
+   output$show_msg3_ph <- renderPrint({
+      cat(msg())
+   })
+   
+   
+   #***1.6.2处理人工处理确认选择结果----------
+   
+   observeEvent(input$mnl_confirm,{
+      res <-data()
+      #print(res$answ$)
+      type = res$type
+      value = var_ListChoose1('audit_ques')
+      #print(value)
+      #print(value())
+      
+      if(type == 'B'){
+         #run_print('msg_print',res$answ$FAnsw[as.integer(value())])
+         output$msg_print <- renderPrint({
+            cat(res$answ$FAnsw[as.integer(value())])
+         })
+         #写入日志
+         icLogUpload(conn=conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = res$answ,index = as.integer(value()),type = type)
+         #写入查询日志
+         queryLog_upload(conn = conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = res$answ)
+         #处理编辑框
+         output$scp_res_ph <-renderUI({
+            textAreaInput('scp_res',label = '消息输出编辑框',value = res$answ$FAnsw[as.integer(value())],rows = 3)
+         })
+         
+      }else{
+         print('其他')
+      }
+      
+      updateTabsetPanel(session, "tabset1",
+                        selected = "输入")
+      
+      
+   })
+   
+   
+   #处理消息复制功能
+   # Add clipboard buttons
+   # output$clip <- renderUI({
+   #    rclipButton("clipbtn", "复制答案", input$scp_res, icon("clipboard"))
+   # })
+   
+   # # Workaround for execution within RStudio version < 1.2
+   # observeEvent(input$clipbtn, {try(clipr::write_clip(input$scp_res,allow_non_interactive = T))})
+   
+   
+   #run_print('mannal_showAnswer','显示人工审核答案')
+   
+   
+   
+   #查看内部支持回复
+   observeEvent(input$show_support2,{
+      updateTabsetPanel(session, "tabset1",
+                        selected = "内部支持-领答")
+      
+   })
+   
+   observeEvent(input$show_support3,{
+      updateTabsetPanel(session, "tabset1",
+                        selected = "内部支持-领答")
+      
+   })
+   
+   #处理内部支持事项
+   
+   # observeEvent(input$spt_getMsg,{
+   #    ques_commit(FQues = msg2())
+   #    shinyalert::shinyalert("友情提示!", '已提交内部支持!请耐心等待或紧急催单', type = "info")
+   # })
+   # 
+   
+   observeEvent(input$oper_support2,{
+      ques_commit(FQues = msg2())
+      shinyalert::shinyalert("友情提示!", '已提交内部支持!请耐心等待或紧急催单', type = "info")
+   })
+   
+   
+   # run_dataTable2('spt_dataTable',head(iris))
+   #处理问题列表
+   books <- getBooks()
+   print(books)
+   #领取答案----
+   dtedit2(input, output,
+           name = 'books',
+           thedata = books,
+           edit.cols = c('FQues','FAnsw'),
+           edit.label.cols = c('问题','答案'),
+           input.types = c(FAnsw='textAreaInput'),
+           #input.choices = list(FNUMBER = unique(unlist(books$FNUMBER))),
+           view.cols = c('FId','FQues','FAnsw'),
+           view.captions = c('序号','问题','答案'),
+           title.edit = '获取答案',
+           label.edit = '获取答案',
+           show.update=T,
+           show.delete =F,
+           show.insert=F,
+           show.copy=F,
+           callback.update = books.update.callback,
+           callback.insert = books.insert.callback,
+           callback.delete = books.delete.callback)
+   books2 <- getBooks2()
+   print(books2)
+   dtedit2(input, output,
+           name = 'books2',
+           thedata = books2,
+           edit.cols = c('FQues','FPriorCount'),
+           edit.label.cols = c('问题','催单次数'),
+           #input.types = c(FAnsw='textAreaInput'),
+           #input.choices = list(FNUMBER = unique(unlist(books$FNUMBER))),
+           view.cols = c('FId','FQues','FPriorCount'),
+           view.captions = c('序号','问题','催单次数'),
+           title.edit = '催单',
+           label.edit = '催单',
+           show.update=T,
+           show.delete =F,
+           show.insert=F,
+           show.copy=F,
+           callback.update = books.update.callback2,
+           callback.insert = books.insert.callback,
+           callback.delete = books.delete.callback)
    
   
 })

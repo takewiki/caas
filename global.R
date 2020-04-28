@@ -12,6 +12,11 @@ library(glue)
 library(shinyauthr)
 library(digest)
 library(shinyWidgets)
+library(tsai);
+library(shinyalert);
+library(rclipboard);
+library(DTedit);
+library(csppkg)
 
 # 设置引入页-----
 source('00_data.R',encoding = 'utf-8');
@@ -23,6 +28,15 @@ source('05_majority_body.R',encoding = 'utf-8');
 source('06_tutor_body.R',encoding = 'utf-8');
 source('99_sysSetting_body.R',encoding = 'utf-8');
 source('workAreaSetting.R',encoding = 'utf-8')
+
+
+
+
+
+
+
+
+
 
 
 
