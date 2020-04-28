@@ -17,6 +17,7 @@ library(shinyalert);
 library(rclipboard);
 library(DTedit);
 library(csppkg)
+library(nscartypepkg);
 
 # 设置引入页-----
 source('00_data.R',encoding = 'utf-8');
