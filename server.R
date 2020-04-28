@@ -200,9 +200,9 @@
    #1.1.1获取车型选项-------
    
    #添加内容
-   output$sel_carType_placeHolder <- renderUI({
-      selectInput("sel_carType", "业务对象设置:",
-                  getCarType(),selected = '发现运动版')
+   output$csp_sel_carType_placeHolder <- renderUI({
+      selectInput("csp_sel_carType", "业务对象设置:",
+                  csppkg::getCarType(),selected = '发现运动版')
       
       
    }
@@ -216,10 +216,10 @@
    msg2 <-reactive({
       msg <- msg()
       #Sys.sleep(20)
-      if(is.null(input$sel_carType)){
+      if(is.null(input$csp_sel_carType)){
          var_type <-'发现运动版'
       }else{
-         var_type <-input$sel_carType
+         var_type <-input$csp_sel_carType
       }
       
       res <- tsdo::str_add(msg,var_type)

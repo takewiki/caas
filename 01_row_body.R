@@ -14,7 +14,7 @@ menu_row <- tabItem(tabName = "row",
                                               title = "消息输入区", width = NULL, solidHeader = TRUE, status = "primary",
                                               fluidRow(column(9,mdl_text('scp_mgsinput','千牛消息(客服可编辑修改):')),
                                                        column(3,
-                                                              uiOutput('sel_carType_placeHolder')
+                                                              uiOutput('csp_sel_carType_placeHolder')
                                                               
                                                               )
                                                        )
