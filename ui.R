@@ -8,12 +8,15 @@ shinyUI(dashboardPage(skin = "blue",
                 
                     
                     dashboardHeader(title = app_title,
+                                    
+                                
+                                    
                                     tags$li(class = "dropdown", style = "padding: 8px;",
                                             uiOutput('show_user')),
                                     
                                     tags$li(class = "dropdown", style = "padding: 8px;",
                                             shinyauthr::logoutUI("logout",label = '注销')),
-                                   
+                                  
                                     #headerMsg1,
                                     #dynamicMsgMenu,
                                    # NotiMenuObj,
@@ -36,7 +39,7 @@ shinyUI(dashboardPage(skin = "blue",
                                             type="text/javascript"),
                                 includeScript("returnClick.js")
                       ),
-                      shinyauthr::loginUI("login",title = '登录界面',user_title = '用户名',pass_title = '密码',login_title = '登录',error_message = '用户名或密码错误,请重试！'),
+                      shinyauthr::loginUI("login",title = '登录界面',user_title = '用户',pass_title = '密码',login_title = '登录',error_message = '用户名或密码错误,请重试！'),
                       uiOutput('show_workAreaSetting'),
                       HTML('<div data-iframe-height></div>')
                     )

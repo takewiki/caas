@@ -4,6 +4,8 @@
  shinyServer(function(input, output,session) {
     #读取用户列表
     user_base <- getUsers(conn,app_id)
+    
+
    
    credentials <- callModule(shinyauthr::login, "login", 
                              data = user_base,
@@ -30,15 +32,44 @@
    #显示用户信息
    output$show_user <- renderUI({
      req(credentials()$user_auth)
-     actionButton('currentUser',label =user_info()$Fuser,icon = icon('user') )
+      
+      dropdownButton(
+         fluidRow(  box(
+            title = NULL, status = "primary", width = 12,solidHeader = FALSE,
+            collapsible = FALSE,collapsed = FALSE,background = 'black',
+            #2.01.01工具栏选项--------
+            
+            
+            actionLink('cu_updatePwd',label ='修改密码',icon = icon('gear') ),
+            br(),
+            br(),
+            actionLink('cu_UserInfo',label = '用户信息',icon = icon('address-card')),
+            br(),
+            br(),
+            actionLink(inputId = "closeCuMenu",
+                         label = "关闭菜单",icon =icon('window-close' ))
+            
+            
+         )) 
+      ,
+         circle = FALSE, status = "primary", icon = icon("user"), width = "100px",
+         tooltip = FALSE,label = user_info()$Fuser,right = TRUE,inputId = 'UserDropDownMenu'
+      )
+      #
+    
      
    })
    
+   observeEvent(input$closeCuMenu,{
+      toggleDropdownButton(inputId = "UserDropDownMenu")
+   }
+                )
+   
    #修改密码
-   observeEvent(input$currentUser,{
+   observeEvent(input$cu_updatePwd,{
       req(credentials()$user_auth)
       
-      showModal(modalDialog(title = paste0("修改",user_info()$Fname,"用户密码"),
+      showModal(modalDialog(title = paste0("修改",user_info()$Fuser,"登录密码"),
                          
                          mdl_password('cu_originalPwd',label = '输入原密码'),
                          mdl_password('cu_setNewPwd',label = '输入新密码'),
@@ -91,6 +122,38 @@
    
    
    
+   #查看用户信息
+   
+   #修改密码
+   observeEvent(input$cu_UserInfo,{
+      req(credentials()$user_auth)
+      
+      user_detail <-function(fkey){
+         res <-tsui::userQueryField(conn = conn,app_id = app_id,user =user_info()$Fuser,key = fkey)
+         return(res)
+      } 
+        
+      
+      showModal(modalDialog(title = paste0("查看",user_info()$Fuser,"用户信息"),
+                            
+                            textInput('cu_info_name',label = '姓名:',value =user_info()$Fname ),
+                            textInput('cu_info_role',label = '角色:',value =user_info()$Fpermissions ),
+                            textInput('cu_info_email',label = '邮箱:',value =user_detail('Femail') ),
+                            textInput('cu_info_phone',label = '手机:',value =user_detail('Fphone') ),
+                            textInput('cu_info_qianniu',label = '千牛账号:',value =user_detail('Fqianniu') ),
+                            textInput('cu_info_rpa',label = 'RPA账号:',value =user_detail('Frpa') ),
+                            textInput('cu_info_dept',label = '部门:',value =user_detail('Fdepartment') ),
+                            textInput('cu_info_company',label = '公司:',value =user_detail('Fcompany') ),
+                            
+                            
+                            footer = column(shiny::modalButton('确认(不保存修改)'),
+                                         
+                                            width=12),
+                            size = 'm'
+      ))
+   })
+   
+   
    
    #针对用户信息进行处理
    
@@ -123,37 +186,7 @@
       
    })
    
-   user_data <- reactive({
-     
-     req(credentials()$user_auth)
-     
-     if (user_info()$Fpermissions == "admin") {
-       dplyr::starwars[,1:10]
-     } else if (user_info()$Fpermissions == "standard") {
-       dplyr::storms[,1:11]
-     }
-     
-   })
-   
-   
-   output$testUI <- renderUI({
-     req(credentials()$user_auth)
-     
-     print(user_info())
-     
-     fluidRow(
-       column(
-         width = 12,
-         tags$h2(glue("Your permission level is: {user_info()$permissions}. 
-                     Your data is: {ifelse(user_info()$permissions == 'admin', 'Starwars', 'Storms')}.")),
-         box(width = NULL, status = "primary",
-             title = ifelse(user_info()$Fpermissions == 'admin', "Starwars Data", "Storms Data"),
-             DT::renderDT(user_data(), options = list(scrollX = TRUE))
-         )
-       )
-     )
-   })
-   
+
    
    
    

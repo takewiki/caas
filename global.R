@@ -11,6 +11,7 @@ library(shinyjs)
 library(glue)
 library(shinyauthr)
 library(digest)
+library(shinyWidgets)
 
 # 设置引入页-----
 source('00_data.R',encoding = 'utf-8');
