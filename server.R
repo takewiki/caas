@@ -335,7 +335,7 @@
       }else if (type=='C'){
          updateTabsetPanel(session, "tabset1",
                            selected = "内部支持提交")
-         ques_commit(FQues = msg2())
+         ques_commit(FQues = msg2(),FCspName = user_info()$Fuser,FTspName = tsp_name)
          
          #写入操作日志
          icLogUpload(conn=conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = answ,index = 1,type = type)
@@ -461,7 +461,8 @@
    # 
    
    observeEvent(input$oper_support2,{
-      ques_commit(FQues = msg2())
+      req(credentials()$user_auth)
+      ques_commit(FQues = msg2(),FCspName =user_info()$Fuser,FTspName = tsp_name )
       shinyalert::shinyalert("友情提示!", '已提交内部支持!请耐心等待或紧急催单', type = "info")
    })
    
@@ -509,6 +510,105 @@
            callback.update = books.update.callback2,
            callback.insert = books.insert.callback,
            callback.delete = books.delete.callback)
+   
+   
+   #2TSP------
+   tsp_books <- tsp_getBooks()
+   tsp_books1 <- tsp_getBooks1()
+   tsp_books2 <- tsp_getBooks2()
+   tsp_books3A <- tsp_getBooks3A()
+   tsp_books3B <- tsp_getBooks3B()
+   tsp_books4 <- tsp_getBooks4()
+   #print(books)
+   dtedit2(input, output,
+           name = 'tcp_prior1',
+           thedata = tsp_books1,
+           edit.cols = c('FQues','FAnsw'),
+           edit.label.cols = c('问题','答案'),
+           input.types = c(FAnsw='textAreaInput'),
+           #input.choices = list(fname = unique(unlist(books$fname))),
+           view.cols = c('FId','FPriorCount','FQues','FAnsw'),
+           view.captions = c('序号','催单次数','问题','答案'),
+           show.insert = F,
+           show.copy = F,
+           show.delete = F,
+           title.edit = '加急处理',
+           label.edit = '加急处理',
+           callback.update = tsp_books.update.callback1,
+           callback.insert = tsp_books.insert.callback1,
+           callback.delete = tsp_books.delete.callback1)
+   dtedit2(input, output,
+           name = 'tcp_prior2',
+           thedata = tsp_books2,
+           edit.cols = c('FQues','FAnsw'),
+           edit.label.cols = c('问题','答案'),
+           input.types = c(FAnsw='textAreaInput'),
+           #input.choices = list(fname = unique(unlist(books$fname))),
+           view.cols = c('FId','FQues','FAnsw'),
+           view.captions = c('序号','问题','答案'),
+           show.insert = F,
+           show.copy = F,
+           show.delete = F,
+           title.edit = '普通处理',
+           label.edit = '普通处理',
+           callback.update = tsp_books.update.callback2,
+           callback.insert = tsp_books.insert.callback2,
+           callback.delete = tsp_books.delete.callback2)
+   dtedit2(input, output,
+           name = 'tcp_prior3A',
+           thedata = tsp_books3A,
+           edit.cols = c('FQues','FAnsw'),
+           edit.label.cols = c('问题','答案'),
+           input.types = c(FAnsw='textAreaInput'),
+           #input.choices = list(fname = unique(unlist(books$fname))),
+           view.cols = c('FId','FQues','FAnsw'),
+           view.captions = c('序号','问题','答案'),
+           show.insert = F,
+           show.copy = F,
+           show.delete = F,
+           show.update=T,
+           title.edit = '修改窗口',
+           label.edit = '修改',
+           callback.update = tsp_books.update.callback3A,
+           callback.insert = tsp_books.insert.callback3A,
+           callback.delete = tsp_books.delete.callback3A)
+   dtedit2(input, output,
+           name = 'tcp_prior3B',
+           thedata = tsp_books3B,
+           edit.cols = c('FQues','FAnsw'),
+           edit.label.cols = c('问题','答案'),
+           input.types = c(FAnsw='textAreaInput'),
+           #input.choices = list(fname = unique(unlist(books$fname))),
+           view.cols = c('FId','FQues','FAnsw'),
+           view.captions = c('序号','问题','答案'),
+           show.insert = F,
+           show.copy = F,
+           show.delete = F,
+           show.update=F,
+           title.edit = '修改窗口',
+           label.edit = '修改',
+           callback.update = tsp_books.update.callback3B,
+           callback.insert = tsp_books.insert.callback3B,
+           callback.delete = tsp_books.delete.callback3B)
+   dtedit2(input, output,
+           name = 'tcp_prior4',
+           thedata = tsp_books4,
+           edit.cols = c('FQues','FAnsw'),
+           edit.label.cols = c('问题','答案'),
+           input.types = c(FAnsw='textAreaInput'),
+           #input.choices = list(fname = unique(unlist(books$fname))),
+           view.cols = c('FId','FQues','FAnsw'),
+           view.captions = c('序号','问题','答案'),
+           show.insert = F,
+           show.copy = F,
+           show.delete = F,
+           show.update=F,
+           callback.update = tsp_books.update.callback4,
+           callback.insert = tsp_books.insert.callback4,
+           callback.delete = tsp_books.delete.callback4)
+   
+   
+   
    
   
 })
