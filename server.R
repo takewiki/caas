@@ -474,6 +474,13 @@
    })
    
    
+   observeEvent(input$oper_support5D,{
+      req(credentials()$user_auth)
+      ques_commit(FQues = msg2(),FCspName =user_info()$Fuser,FTspName = tsp_name )
+      updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--类型C',value = "你的需求我们已经收到，我与我们领导沟通后第一时间回复您")
+      shinyalert::shinyalert("友情提示!", '已提交内部支持!请耐心等待或紧急催单', type = "info")
+   })
+   
    #添加复制功能-----
    output$clip <- renderUI({
       try({
@@ -483,12 +490,13 @@
    })
    
    #添加导购语-----
-   var_set_sale <- var_ListChoose1('set_sale')
+   #var_set_sale <- var_ListChoose1('set_sale')
  
    observeEvent(input$add_sale,{
       
       msg_sale <- input$msg_sale
-      opt_sale <-var_set_sale()
+      #opt_sale <-var_set_sale()
+      opt_sale <- input$set_sale
       
       if(opt_sale){
          #独立回复
@@ -508,11 +516,12 @@
    
    
    #添加留资-----
-   var_set_info <- var_ListChoose1('set_info')
+   #var_set_info <- var_ListChoose1('set_info')
    observeEvent(input$add_info,{
       
       msg_info <- input$msg_info
-      opt_info <-var_set_info()
+      #opt_info <-var_set_info()
+      opt_info <-input$set_info
       if(opt_info){
          #独立回复
          updateTextAreaInput(session,'scp_res',label = '消息输出编辑框',value = msg_info)
@@ -529,12 +538,13 @@
    
    #处理留资信息-------
    
-   var_set_speak <- var_ListChoose1('set_speak')
+
    
    observeEvent(input$add_welcome,{
       
       msg_speak <- input$msg_speak
-      opt_speak <-var_set_speak()
+ 
+      opt_speak <-input$set_speak
       if(opt_speak){
          #独立回复
          updateTextAreaInput(session,'scp_res',label = '消息输出编辑框',value = msg_speak)
