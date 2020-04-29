@@ -300,14 +300,16 @@
       if (type == 'A'){
          #显示系统结果
          # run_print('msg_print',answ)
-         output$msg_print <- renderPrint({
-            cat(answ$FAnsw[1])
-         })
+         # output$msg_print <- renderPrint({
+         #    cat(answ$FAnsw[1])
+         # })
          
-         output$scp_res_ph <-renderUI({
-            #info = paste(answ,input$msg_sale,sep="\n")
-            textAreaInput('scp_res',label = '消息输出编辑框',value = answ$FAnsw[1],rows = 3)
-         })
+         # output$scp_res_ph <-renderUI({
+         #    #info = paste(answ,input$msg_sale,sep="\n")
+         #    textAreaInput('scp_res',label = '消息输出编辑框',value = answ$FAnsw[1],rows = 3)
+         # })
+         
+         updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--类型A',value = answ$FAnsw[1])
          
          #写入客服日志
          
@@ -342,7 +344,9 @@
          #写入查询日志
          queryLog_upload(conn = conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = answ)
          #提示框
+         updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--类型C',value = "你的需求我们已经收到，我与我们领导沟通后第一时间回复您")
          shinyalert::shinyalert("友情提示!", '已提交内部支持!请耐心等待或紧急催单', type = "info")
+         
          
          
          
@@ -402,17 +406,19 @@
       
       if(type == 'B'){
          #run_print('msg_print',res$answ$FAnsw[as.integer(value())])
-         output$msg_print <- renderPrint({
-            cat(res$answ$FAnsw[as.integer(value())])
-         })
+         # output$msg_print <- renderPrint({
+         #    cat(res$answ$FAnsw[as.integer(value())])
+         # })
          #写入日志
          icLogUpload(conn=conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = res$answ,index = as.integer(value()),type = type)
          #写入查询日志
          queryLog_upload(conn = conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = res$answ)
          #处理编辑框
-         output$scp_res_ph <-renderUI({
-            textAreaInput('scp_res',label = '消息输出编辑框',value = res$answ$FAnsw[as.integer(value())],rows = 3)
-         })
+         # output$scp_res_ph <-renderUI({
+         #    textAreaInput('scp_res',label = '消息输出编辑框',value = res$answ$FAnsw[as.integer(value())],rows = 3)
+         # })
+         
+         updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--类型B',value = res$answ$FAnsw[as.integer(value())])
          
       }else{
          print('其他')
@@ -452,7 +458,7 @@
       
    })
    
-   #处理内部支持事项
+   #33处理内部支持事项------
    
    # observeEvent(input$spt_getMsg,{
    #    ques_commit(FQues = msg2())
@@ -463,7 +469,83 @@
    observeEvent(input$oper_support2,{
       req(credentials()$user_auth)
       ques_commit(FQues = msg2(),FCspName =user_info()$Fuser,FTspName = tsp_name )
+      updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--类型C',value = "你的需求我们已经收到，我与我们领导沟通后第一时间回复您")
       shinyalert::shinyalert("友情提示!", '已提交内部支持!请耐心等待或紧急催单', type = "info")
+   })
+   
+   
+   #添加复制功能-----
+   output$clip <- renderUI({
+      try({
+         rclipButton("clipbtn", "复制到千牛", input$scp_res, icon("clipboard"))
+         
+      })
+   })
+   
+   #添加导购语-----
+   var_set_sale <- var_ListChoose1('set_sale')
+ 
+   observeEvent(input$add_sale,{
+      
+      msg_sale <- input$msg_sale
+      opt_sale <-var_set_sale()
+      
+      if(opt_sale){
+         #独立回复
+         updateTextAreaInput(session,'scp_res',label = '消息输出编辑框',value = msg_sale)
+         
+      }else{
+         
+         #挂钩
+         msg_sale2 <- paste0(input$scp_res,msg_sale)
+         updateTextAreaInput(session,'scp_res',label = '消息输出编辑框',value = msg_sale2)
+         
+      }
+      
+      
+      
+   })
+   
+   
+   #添加留资-----
+   var_set_info <- var_ListChoose1('set_info')
+   observeEvent(input$add_info,{
+      
+      msg_info <- input$msg_info
+      opt_info <-var_set_info()
+      if(opt_info){
+         #独立回复
+         updateTextAreaInput(session,'scp_res',label = '消息输出编辑框',value = msg_info)
+         
+      }else{
+         #挂钩
+         msg_info2 <- paste0(input$scp_res,msg_info)
+         updateTextAreaInput(session,'scp_res',label = '消息输出编辑框',value = msg_info2)
+         
+      }
+      
+   })
+   
+   
+   #处理留资信息-------
+   
+   var_set_speak <- var_ListChoose1('set_speak')
+   
+   observeEvent(input$add_welcome,{
+      
+      msg_speak <- input$msg_speak
+      opt_speak <-var_set_speak()
+      if(opt_speak){
+         #独立回复
+         updateTextAreaInput(session,'scp_res',label = '消息输出编辑框',value = msg_speak)
+         
+      }else{
+         #挂钩
+         msg_speak2 <- paste0(input$scp_res,msg_speak)
+         updateTextAreaInput(session,'scp_res',label = '消息输出编辑框',value = msg_speak2)
+         
+      }
+      
    })
    
    

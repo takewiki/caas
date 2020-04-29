@@ -14,7 +14,9 @@ menu_row <- tabItem(tabName = "row",
                                               title = "消息输入区", width = NULL, solidHeader = TRUE, status = "primary",
                                               fluidRow(column(9,mdl_text('scp_mgsinput','千牛消息(客服可编辑修改):')),
                                                        column(3,
-                                                              uiOutput('csp_sel_carType_placeHolder')
+                                                              uiOutput('csp_sel_carType_placeHolder'),
+                                                              #加载复制功能
+                                                              try(rclipboardSetup())
                                                               
                                                               )
                                                        )
@@ -110,16 +112,32 @@ menu_row <- tabItem(tabName = "row",
                                         fluidRow(
                                           column(8,
                                                  #mdl_print('msg_print'),
-                                                 verbatimTextOutput('msg_print'),
+                                                 #verbatimTextOutput('msg_print'),
+                                                 
+                                                 #cancelled-----
                                                  #mdl_text('scp_km_res1','消息输出结果'),
-                                                 uiOutput('scp_res_ph'),
+                                                 #uiOutput('scp_res_ph'),
+                                                 
+                                                 #add here-------
+                                                 textAreaInput('scp_res',label = '消息输出编辑框',value = '知识库查询结果将显示在这里，请等待',rows = 5),
+                                                 
                                                  fluidRow(column(6,
-                                                                 uiOutput("clip"),
-                                                                 actionButton('add_sale','添加导购',icon('shopping-cart')),
-                                                                 actionButton('add_info','添加留资',icon('info-circle'))
+                                                                 fluidRow(
+                                                                   column(6,checkboxInput('scp_oper_auto','20秒自回',value = TRUE)),
+                                                                   column(6,actionButton('add_welcome','添加欢迎语',icon = icon('smile')))
+                                                                   )
+                                                                 
+                                                                 ,
+                                                                 fluidRow(
+                                                                   column(6,actionButton('add_sale','添加导购',icon('shopping-cart'))),
+                                                                   column(6,actionButton('add_info','添加留资',icon('info-circle')))
+                                                                   )
+                                                                 
+                                                                 
+                                                                 
                                                                  
                                                  ),
-                                                 column(6,checkboxInput('scp_oper_auto','20秒超时自动回复',value = TRUE))
+                                                 column(6,uiOutput("clip"))
                                                  )
                                                  ),
                                           column(4,
@@ -131,8 +149,8 @@ menu_row <- tabItem(tabName = "row",
                                                    
                                                    selectInput("msg_speak", "添加话术:",
                                                                c("话述语1" = "请问有什么能为您服务的吗？",
-                                                                 "话述语2" = "am",
-                                                                 "话述语3" = "gear")),
+                                                                 "话述语2" = "有什么可以帮您",
+                                                                 "话述语3" = "有什么可以为您效劳")),
                                                    mdl_ListChoose1('set_speak',label = '欢迎语选项',choiceNames = list('独立回复','挂购回复'),
                                                                    choiceValues = list(TRUE,FALSE),selected = TRUE)
                                                    
@@ -148,14 +166,14 @@ menu_row <- tabItem(tabName = "row",
                                                    
                                                    selectInput("msg_sale", "添加导购语:",
                                                                c('导购语1' = "目前全新路虎发现运动版携纳米级净化技术护航上市，全系标配空气质量监测系统、PM2.5雾霾净化系统和纳米级车内负离子除菌系统。如您有兴趣可以点击了解详情：https://detail.tmall.com/item.htm?id=610700638815&spm=2014.21600712.0.0",
-                                                                 "导购语2" = "am",
-                                                                 "导购语3" = "gear")),
+                                                                 "导购语2" = "我们推出新车型，你是否感兴趣？",
+                                                                 "导购语3" = "我们有优惠金融方式，是否需要推送给您")),
                                                    mdl_ListChoose1('set_sale',label = '导购选项',choiceNames = list('独立回复','挂购回复'),
-                                                                   choiceValues = list('1','2'),selected = '1'),
+                                                                   choiceValues = list(TRUE,FALSE),selected = TRUE),
                                                    selectInput("msg_info", "添加留资语:",
                                                                c('留资语1' = "目前全新路虎发现运动版携纳米级净化技术护航上市，全系标配空气质量监测系统、PM2.5雾霾净化系统和纳米级车内负离子除菌系统。如您有兴趣可以点击了解详情：https://detail.tmall.com/item.htm?id=610700638815&spm=2014.21600712.0.0",
-                                                                 "留资语2" = "am",
-                                                                 "留资语3" = "gear")),
+                                                                 "留资语2" = "我们有抽奖活动，您是否要参与",
+                                                                 "留资语3" = "我们有精品可以推荐，请提供物流信息")),
                                                    mdl_ListChoose1('set_info',label = '留资选项',choiceNames = list('独立回复','挂购回复'),
                                                                    choiceValues = list(TRUE,FALSE),selected = TRUE)
                                                    
