@@ -133,7 +133,9 @@ menu_row <- tabItem(tabName = "row",
                                                  fluidRow(column(6,
                                                                  fluidRow(
                                                                    column(6,checkboxInput('scp_oper_auto','20秒自回',value = TRUE)),
-                                                                   column(6,'')
+                                                                   column(6,materialSwitch(inputId = "clip_auto", 
+                                                                                           label = "复制后自动清除内容", value = FALSE, 
+                                                                                           status = "primary"))
                                                                    )
                                                                  
                                                                  ,
@@ -146,7 +148,9 @@ menu_row <- tabItem(tabName = "row",
                                                                  
                                                                  
                                                  ),
-                                                 column(6,uiOutput("clip"))
+                                                 column(6,uiOutput("clip")
+                                                        
+                                                        )
                                                  )
                                                  ),
                                           column(4,

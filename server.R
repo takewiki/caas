@@ -286,6 +286,10 @@
    #1.6提交服务器---------
    observeEvent(input$scp_submit,{
       #处理相关内容
+      # print(as.integer(input$oper_support5D) )
+      # print(as.integer(input$oper_support5D) == 0 )
+      # print(as.integer(input$oper_support2))
+      # print(as.integer(input$oper_support2) == 0)
       #加载相关内容
       req(credentials()$user_auth)
       
@@ -309,12 +313,12 @@
          #    textAreaInput('scp_res',label = '消息输出编辑框',value = answ$FAnsw[1],rows = 3)
          # })
          
-         updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--类型A',value = answ$FAnsw[1])
+         updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--类型A1',value = answ$FAnsw[1])
          
          #写入客服日志
          
          
-         icLogUpload(conn=conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = answ,index = 1,type = type)
+         icLogUpload(conn=conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = answ,index = 1,type = type,forHelp = as.integer(input$oper_support5D))
          #写入AI查询日志
          queryLog_upload(conn = conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = answ)
          
@@ -410,7 +414,7 @@
          #    cat(res$answ$FAnsw[as.integer(value())])
          # })
          #写入日志
-         icLogUpload(conn=conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = res$answ,index = as.integer(value()),type = type)
+         icLogUpload(conn=conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = res$answ,index = as.integer(value()),type = type,forHelp = as.integer(input$oper_support2))
          #写入查询日志
          queryLog_upload(conn = conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = res$answ)
          #处理编辑框
@@ -418,7 +422,7 @@
          #    textAreaInput('scp_res',label = '消息输出编辑框',value = res$answ$FAnsw[as.integer(value())],rows = 3)
          # })
          
-         updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--类型B',value = res$answ$FAnsw[as.integer(value())])
+         updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--类型B1',value = res$answ$FAnsw[as.integer(value())])
          
       }else{
          print('其他')
@@ -468,16 +472,26 @@
    
    observeEvent(input$oper_support2,{
       req(credentials()$user_auth)
+      res <-data()
+      type = res$type
+      answ = res$answ
       ques_commit(FQues = msg2(),FCspName =user_info()$Fuser,FTspName = tsp_name )
-      updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--类型C',value = "你的需求我们已经收到，我与我们领导沟通后第一时间回复您")
+      #写入日志
+      icLogUpload(conn=conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = res$answ,index = 1,type = type,forHelp = as.integer(input$oper_support2))
+      updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--类型B0',value = "你的需求我们已经收到，我与我们领导沟通后第一时间回复您")
       shinyalert::shinyalert("友情提示!", '已提交内部支持!请耐心等待或紧急催单', type = "info")
    })
    
    
    observeEvent(input$oper_support5D,{
       req(credentials()$user_auth)
+      res <- data()
+      type = res$type
+      answ = res$answ
       ques_commit(FQues = msg2(),FCspName =user_info()$Fuser,FTspName = tsp_name )
-      updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--类型C',value = "你的需求我们已经收到，我与我们领导沟通后第一时间回复您")
+      #写入日志
+      icLogUpload(conn=conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = res$answ,index = 1,type = type,forHelp = as.integer(input$oper_support5D))
+      updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--类型A0',value = "你的需求我们已经收到，我与我们领导沟通后第一时间回复您")
       shinyalert::shinyalert("友情提示!", '已提交内部支持!请耐心等待或紧急催单', type = "info")
    })
    
@@ -489,6 +503,13 @@
       })
    })
    
+   #处理复制后事项---
+   
+   observeEvent(input$clipbtn,{
+      if(input$clip_auto){
+        updateTextAreaInput(session,'scp_res',label = '消息输出编辑框-复制后内容已清除',value = '') 
+      }
+   })
    #添加导购语-----
    #var_set_sale <- var_ListChoose1('set_sale')
  
