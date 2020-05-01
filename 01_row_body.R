@@ -118,6 +118,10 @@ menu_row <- tabItem(tabName = "row",
                                column(12,  #code here
                                       box(
                                         title = "显示结果", width = NULL, solidHeader = TRUE, status = "primary",
+                                        #添加倒计量功能,
+                                        fluidRow(
+                                          column(6,textOutput('timeleft')),
+                                          column(6,htmlOutput('timeleft2'))),
                                         fluidRow(
                                           column(8,
                                                  #mdl_print('msg_print'),
@@ -132,7 +136,7 @@ menu_row <- tabItem(tabName = "row",
                                                  
                                                  fluidRow(column(6,
                                                                  fluidRow(
-                                                                   column(6,checkboxInput('scp_oper_auto','20秒自回',value = TRUE)),
+                                                                   column(6,numericInput('seconds','超时设置:',value=15,min=0,max=99999,step=1)),
                                                                    column(6,materialSwitch(inputId = "clip_auto", 
                                                                                            label = "复制后自动清除内容", value = FALSE, 
                                                                                            status = "primary"))

@@ -280,6 +280,57 @@
       
    })
    
+   #1.6.0添加计时-------
+   #添加超时功能----------
+   # Initialize the timer, 10 seconds, not active.
+   # intial_sec <- reactive({input$seconds})
+   timer <- reactiveVal(15)
+   active <- reactiveVal(FALSE)
+   
+   # Output the time left.
+   output$timeleft <- renderText({
+      paste("已用时: ", seconds_as_Timetext(input$seconds-timer()),"倒计时: ", seconds_as_Timetext(timer()))
+   })
+   
+   
+   
+   output$timeleft2 <- renderText({ 
+      
+      if(timer() >6){
+         NULL
+      }else{
+         paste("最后倒计时","<font color=\"#FF0000\"><b>", seconds_as_Timetext(timer()), "</b></font>") 
+         
+      }
+      
+   })
+   
+   # observer that invalidates every second. If timer is active, decrease by one.
+   observe({
+      invalidateLater(1000, session)
+      isolate({
+         if(active())
+         {
+            timer(timer()-1)
+            if(timer()<1)
+            {
+               active(FALSE)
+               updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--自动回复',value = '超时自动回复内容测试')
+               showModal(modalDialog(
+                  title = "超时提醒",
+                  "时间已到", footer = column(shiny::modalButton('确认'),
+                                          
+                                          width=12)
+               ))
+            }
+         }
+      })
+   })
+   
+
+
+
+
    
    
    
@@ -290,6 +341,10 @@
       # print(as.integer(input$oper_support5D) == 0 )
       # print(as.integer(input$oper_support2))
       # print(as.integer(input$oper_support2) == 0)
+      #添加计时功能
+         timer(input$seconds)
+         active(TRUE)
+      
       #加载相关内容
       req(credentials()$user_auth)
       
@@ -506,10 +561,15 @@
    #处理复制后事项---
    
    observeEvent(input$clipbtn,{
+      active(FALSE)
       if(input$clip_auto){
         updateTextAreaInput(session,'scp_res',label = '消息输出编辑框-复制后内容已清除',value = '') 
       }
    })
+   
+   #添加计时处理
+   #observeEvent(input$stop, {})
+   
    #添加导购语-----
    #var_set_sale <- var_ListChoose1('set_sale')
  
@@ -767,7 +827,6 @@
            callback.delete = carType.delete.callback)
    
    
-   
-   
+  
   
 })
