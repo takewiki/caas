@@ -1,48 +1,54 @@
 menu_majority <- tabItem(tabName = "majority",
                          fluidRow(
-                           column(width = 4,
-                                  box(
-                                    title = "majority", width = NULL, solidHeader = TRUE, status = "primary",
-                                    "Box content"
-                                  ),
-                                  box(
-                                    title = "Title 1", width = NULL, solidHeader = TRUE, status = "primary",
-                                    "Box content"
-                                  ),
-                                  box(
-                                    title = "Title 1", width = NULL, solidHeader = TRUE, status = "primary",
-                                    "Box content"
-                                  )
-                           ),
-                           
-                           column(width = 4,
-                                  box(
-                                    title = "Title 1", width = NULL, solidHeader = TRUE, status = "primary",
-                                    "Box content"
-                                  ),
-                                  box(
-                                    title = "Title 1", width = NULL, solidHeader = TRUE, status = "primary",
-                                    "Box content"
-                                  ),
-                                  box(
-                                    title = "Title 1", width = NULL, solidHeader = TRUE, status = "primary",
-                                    "Box content"
-                                  )
-                           ),
-                           
-                           column(width=4,
-                                  box(
-                                    title = "Title 1", width = NULL, solidHeader = TRUE, status = "primary",
-                                    "Box content"
-                                  ),
-                                  box(
-                                    title = "Title 1", width = NULL, solidHeader = TRUE, status = "primary",
-                                    "Box content"
-                                  ),
-                                  box(
-                                    title = "Title 1", width = NULL, solidHeader = TRUE, status = "primary",
-                                    "Box content"
-                                  )
+                           column(width = 12,
+                                 tabBox(title ="报表工作台",width = 12,
+                                        id='tabSetRpt',height = '300px',
+                                        tabPanel('智能导购报表',tagList(
+                                          fluidRow(column(4,box(
+                                            title = "操作区域", width = NULL, solidHeader = TRUE, status = "primary",
+                                            mdl_dateRange('um_cspDates',label = '报表日期范围选择',startDate = Sys.Date()-7,endDate = Sys.Date()),
+                                            actionButton('um_cspPreview','预览报表'),
+                                            mdl_download_button('um_cspInfo_dl','下载报表')
+                                          )),
+                                          column(8, box(
+                                            title = "报表区域", width = NULL, solidHeader = TRUE, status = "primary",
+                                            
+                                            mdl_dataTable('um_cspInfo','智能导购报表')
+                                          )
+                                          ))
+                                          
+                                        )),
+                                        tabPanel('内部支持报表',tagList(
+                                          fluidRow(column(4,box(
+                                            title = "操作区域", width = NULL, solidHeader = TRUE, status = "primary",
+                                            mdl_dateRange('um_tspDates',label = '报表日期范围选择',startDate = Sys.Date()-7,endDate = Sys.Date()),
+                                            actionButton('um_tspPreview','预览报表'),
+                                            mdl_download_button('um_tspInfo_dl','下载内部支持报表')
+                                          )),
+                                          column(8, box(
+                                            title = "报表区域", width = NULL, solidHeader = TRUE, status = "primary",
+                                            mdl_dataTable('um_tspInfo','内部支持报表')
+                                          )
+                                          ))
+                                          
+                                        )),
+                                        tabPanel('用户管理报表',tagList(
+                                           fluidRow(column(4,box(
+                                             title = "操作区域", width = NULL, solidHeader = TRUE, status = "primary",
+                                             mdl_download_button('um_userInfo_dl','下载用户信息')
+                                           )),
+                                                    column(8, box(
+                                                      title = "报表区域", width = NULL, solidHeader = TRUE, status = "primary",
+                                                      mdl_dataTable('um_userInfo','用户信息')
+                                                    )
+                                                    ))
+                                          
+                                         
+                                        ))
+                                        
+                                        
+                                        
+                                        )
                            )
                          )
 )

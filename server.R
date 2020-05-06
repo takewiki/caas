@@ -827,6 +827,62 @@
            callback.delete = carType.delete.callback)
    
    
+   #报表处理
+      csp_dates <- var_dateRange('um_cspDates')
+   db_cspRpt<- eventReactive(input$um_cspPreview,{
+      
+      dates <-csp_dates()
+      startDate <- as.character(dates[1])
+      endDate <- as.character(dates[2])
+      print(startDate)
+      print(endDate)
+      res <- getCspRpt(conn,startDate,endDate)
+      print(nrow(res))
+      return(res)
+   })
+   
+   observeEvent(input$um_cspPreview,{
+      
+      run_dataTable2('um_cspInfo',db_cspRpt())
+      run_download_xlsx('um_cspInfo_dl',db_cspRpt(),'下载智能导购报表.xlsx')
+   })
+   
+   #  
+   tsp_dates <- var_dateRange('um_tspDates')
+   db_tspRpt<- eventReactive(input$um_tspPreview,{
+      
+      dates <-tsp_dates()
+      startDate <- as.character(dates[1])
+      endDate <- as.character(dates[2])
+      print(startDate)
+      print(endDate)
+      res <- getTspRpt(conn,startDate,endDate)
+      print(nrow(res))
+      return(res)
+   })
+   
+   observeEvent(input$um_tspPreview,{
+      
+      run_dataTable2('um_tspInfo',db_tspRpt())
+      run_download_xlsx('um_tspInfo_dl',db_tspRpt(),'下载内部支持报表.xlsx')
+   })
+   
+   
+   
+
+   #系统用户报表
+   db_userInfoRpt <- reactive({
+      res <- getUserInfoRpt(app_id=app_id)
+      return(res)
+   })
+   
+   
+   #系统用户报表
+  run_dataTable2('um_userInfo',db_userInfoRpt())
+   
+  #下载用户信息
+  run_download_xlsx('um_userInfo_dl',db_userInfoRpt(),'下载用户明细报表.xlsx')
+   
   
   
 })

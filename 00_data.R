@@ -1,6 +1,6 @@
 # 设置app标题-----
 
-app_title <-'AI汽车导购综合平台V2.1';
+app_title <-'AI汽车导购综合平台V2.2';
 
 # store data into rdbe in the rds database
 app_id <- 'caas'
@@ -549,6 +549,7 @@ tsp_books.delete.callback4 <- function(data, row ,table ='t_tsp_ques',f=tsp_getB
 
 
 
+#以下为系统管理报表
 
 
 

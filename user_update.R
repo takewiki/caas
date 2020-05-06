@@ -1,6 +1,6 @@
-bb <-tsui::readUserFile(file = "caas_users -v2.xlsx")
+bb <-tsui::readUserFile(file = "caas_users -v3.xlsx")
 cc <- tsui::userRight_upload(app_id = 'caas',data = bb)
 
 
-dd <-userInfo_upload(data = bb,app_id = 'caas')
+dd <-tsui::userInfo_upload(data = bb,app_id = 'caas')
 
