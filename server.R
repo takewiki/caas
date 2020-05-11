@@ -916,4 +916,44 @@
      
      
   })
+  
+  #处理千牛报表下载
+  qn_dates <- var_dateRange('um_qnDates')
+  db_qnRpt<- eventReactive(input$um_qnPreview,{
+     
+     dates <-qn_dates()
+     startDate <- as.character(dates[1])
+     endDate <- as.character(dates[2])
+     print(startDate)
+     print(endDate)
+     res <- caaspkg::getQianNiuRpt(conn,startDate,endDate)
+     print(nrow(res))
+     return(res)
+  })
+  
+  observeEvent(input$um_qnPreview,{
+     
+     run_dataTable2('um_qnInfo',db_qnRpt())
+     run_download_xlsx('um_qnInfo_dl',db_qnRpt(),'下载千牛日志明细报表.xlsx')
+  })
+  
+  #处理千牛汇总报表-----
+  qn2_dates <- var_dateRange('um_qn2Dates')
+  db_qn2Rpt<- eventReactive(input$um_qn2Preview,{
+     
+     dates <-qn2_dates()
+     startDate <- as.character(dates[1])
+     endDate <- as.character(dates[2])
+     print(startDate)
+     print(endDate)
+     res <- caaspkg::getQianNiu2Rpt(conn,startDate,endDate)
+     print(nrow(res))
+     return(res)
+  })
+  
+  observeEvent(input$um_qnPreview,{
+     
+     run_dataTable2('um_qn2Info',db_qn2Rpt())
+     run_download_xlsx('um_qn2Info_dl',db_qn2Rpt(),'下载千牛日志汇总报表.xlsx')
+  })
 })

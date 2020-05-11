@@ -199,7 +199,7 @@ menu_row <- tabItem(tabName = "row",
                                           column(4,   box(
                                             title = "日志操作区", width = NULL, solidHeader = TRUE, status = "primary",
                                             
-                                            mdl_files('upload_cl_batch','批量上传语料文件',fileType = '.txt'),
+                                            mdl_files('upload_cl_batch','上传千牛日志文件',fileType = '.txt'),
                                             actionButton('cl_upload_preview','预览日志'),
                                             actionButton('cl_upload_done','上传服务器')
                                           )),
