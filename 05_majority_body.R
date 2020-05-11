@@ -49,13 +49,13 @@ menu_majority <- tabItem(tabName = "majority",
                                         tabPanel('千牛日志汇总报表',tagList(
                                           fluidRow(column(4,box(
                                             title = "操作区域", width = NULL, solidHeader = TRUE, status = "primary",
-                                            mdl_dateRange('um_qn2Dates',label = '报表日期范围选择',startDate = Sys.Date()-7,endDate = Sys.Date()),
-                                            actionButton('um_qn2Preview','预览报表'),
-                                            mdl_download_button('um_qn2Info_dl','下载千牛日志汇总报表')
+                                            mdl_dateRange('um_qnDates2',label = '报表日期范围选择',startDate = Sys.Date()-7,endDate = Sys.Date()),
+                                            actionButton('um_qnPreview2','预览报表'),
+                                            mdl_download_button('um_qnInfo_dl2','下载千牛日志汇总报表')
                                           )),
                                           column(8, box(
                                             title = "报表区域", width = NULL, solidHeader = TRUE, status = "primary",
-                                            mdl_dataTable('um_qn2Info','千牛日志汇总报表')
+                                            mdl_dataTable('um_qnInfo2','千牛日志汇总报表')
                                           )
                                           ))
                                           

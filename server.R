@@ -938,10 +938,11 @@
   })
   
   #处理千牛汇总报表-----
-  qn2_dates <- var_dateRange('um_qn2Dates')
-  db_qn2Rpt<- eventReactive(input$um_qn2Preview,{
+  qn_dates2 <- var_dateRange('um_qnDates2')
+  db_qnRpt2<- eventReactive(input$um_qnPreview2,{
      
-     dates <-qn2_dates()
+     dates <-qn_dates2()
+     print('start')
      startDate <- as.character(dates[1])
      endDate <- as.character(dates[2])
      print(startDate)
@@ -951,9 +952,9 @@
      return(res)
   })
   
-  observeEvent(input$um_qnPreview,{
+  observeEvent(input$um_qnPreview2,{
      
-     run_dataTable2('um_qn2Info',db_qn2Rpt())
-     run_download_xlsx('um_qn2Info_dl',db_qn2Rpt(),'下载千牛日志汇总报表.xlsx')
+     run_dataTable2('um_qnInfo2',db_qnRpt2())
+     run_download_xlsx('um_qnInfo_dl2',db_qnRpt2(),'下载千牛日志汇总报表.xlsx')
   })
 })
