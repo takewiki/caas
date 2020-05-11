@@ -883,6 +883,37 @@
   #下载用户信息
   run_download_xlsx('um_userInfo_dl',db_userInfoRpt(),'下载用户明细报表.xlsx')
    
+  #处理千牛日志上传--------
+  files_cl <- var_files('upload_cl_batch');
   
+  data_kflog <- eventReactive(input$cl_upload_preview,{
+     res <- nrcsrobot::read_kflogs_new(files = files_cl())
+     res$FUser <-user_info()$Fuser
+     res$FUploadDate <-tsdo::getDate()
+     return(res)
+  })
   
+  data_kflog_cn <- reactive({
+     data <-data_kflog()
+     print(names(data))
+     names(data) <- c('原文','分组','序号','日期时间','日期','时间','对象','内容','品牌方','导购','上传时间')
+     return(data)
+     
+     
+  })
+  
+  observeEvent(input$cl_upload_preview,{
+     run_dataTable2('dt_cl_batch',data_kflog_cn())
+  })
+  
+  #上传服务器
+  observeEvent(input$cl_upload_done,{
+     
+     tsda::db_writeTable(conn=conn,table_name = 't_kf_log',r_object = data_kflog(),append = T)
+     pop_notice(paste0("上传了",nrow(data_kflog()),"条记录"))
+     
+     
+     
+     
+  })
 })

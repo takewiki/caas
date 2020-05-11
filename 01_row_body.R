@@ -193,7 +193,24 @@ menu_row <- tabItem(tabName = "row",
                                             title = "消息查询区", width = NULL, solidHeader = TRUE, status = "primary",
                                             
                                             uiOutput('books2')
-                                          )))))
+                                          ))))),
+                               tabPanel("上传千牛日志", 
+                                        tagList(fluidRow(
+                                          column(4,   box(
+                                            title = "日志操作区", width = NULL, solidHeader = TRUE, status = "primary",
+                                            
+                                            mdl_files('upload_cl_batch','批量上传语料文件',fileType = '.txt'),
+                                            actionButton('cl_upload_preview','预览日志'),
+                                            actionButton('cl_upload_done','上传服务器')
+                                          )),
+                                          column(8,
+                                                 box(
+                                                   title = "日志预览区", width = NULL, solidHeader = TRUE, status = "primary",
+                                                   
+                                                   mdl_dataTable('dt_cl_batch')
+                                                 )
+                                                 
+                                                 ))))
                                
                                
                              )),
