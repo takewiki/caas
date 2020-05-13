@@ -1002,5 +1002,52 @@
    
      
   })
+  #用户管理-----
+  var_usr_file <- var_file('usr_file')
+  
+  
+  data_user_add <- eventReactive(input$usr_preview,{
+     
+     res <-tsui::readUserFile(file = var_usr_file())
+     return(res)
+  })
+  
+  data_userName_New <- reactive({
+     data <-data_user_add()
+     res <- data$Fuser
+     return(res)
+  })
+  
+  observeEvent(input$usr_preview,{
+     
+     run_dataTable2('usr_info',data_user_add())
+     
+  })
+  #批量新增按纽
+  observeEvent(input$usr_upload,{
+     
+     newUser_flag <- caaspkg::getNewUsers(conn = conn_be,app_id = app_id,users = data_userName_New())
+     print(newUser_flag)
+     users_all <- data_user_add()
+     users_filtered <- users_all[newUser_flag,]
+     ncount <- nrow(users_filtered)
+     if(ncount >0){
+         tsui::userRight_upload(app_id = app_id,data = users_filtered)
+        
+        
+        tsui::userInfo_upload(data = users_filtered,app_id = app_id)
+        
+        pop_notice(paste0('上传',ncount,"条用户记录！"))
+        
+     }else{
+        pop_notice("上述用户已全部在系统中,请确认！")
+        
+     }
+     
+     
+     
+     
+  })
+  
   
 })
