@@ -203,6 +203,8 @@
    output$csp_sel_carType_placeHolder <- renderUI({
       selectInput("csp_sel_carType", "业务对象设置:",
                   csppkg::getCarType(),selected = '发现运动版')
+      #测试业务对象
+      #print(csppkg::getCarType())
       
       
    }
@@ -214,15 +216,23 @@
    
    #1.2添加业务对象-------
    msg2 <-reactive({
-      msg <- msg()
+      #强制对输入的内容转化为大写字母
+      #针对英文有效
+      msg <- toupper(msg())
       #Sys.sleep(20)
       if(is.null(input$csp_sel_carType)){
          var_type <-'发现运动版'
       }else{
          var_type <-input$csp_sel_carType
+         #测试数据
+         print('select cartype:')
+         print(var_type)
       }
       
       res <- tsdo::str_add(msg,var_type)
+      #增加测试点
+      print('cartype res:')
+      print(res)
       return(res)
    })
    
@@ -231,7 +241,9 @@
    ques_tip <- reactive({
       keyword <-msg2()
       res <- ai_tip(keyword,3)
-      #print(res)
+      #针对进行处理
+      print('tip:')
+      print(res)
       res <- unique(c(keyword,res))
       res <-vect_as_list(res)
       #print(res)
@@ -1002,5 +1014,52 @@
    
      
   })
+  #用户管理-----
+  var_usr_file <- var_file('usr_file')
+  
+  
+  data_user_add <- eventReactive(input$usr_preview,{
+     
+     res <-tsui::readUserFile(file = var_usr_file())
+     return(res)
+  })
+  
+  data_userName_New <- reactive({
+     data <-data_user_add()
+     res <- data$Fuser
+     return(res)
+  })
+  
+  observeEvent(input$usr_preview,{
+     
+     run_dataTable2('usr_info',data_user_add())
+     
+  })
+  #批量新增按纽
+  observeEvent(input$usr_upload,{
+     
+     newUser_flag <- caaspkg::getNewUsers(conn = conn_be,app_id = app_id,users = data_userName_New())
+     print(newUser_flag)
+     users_all <- data_user_add()
+     users_filtered <- users_all[newUser_flag,]
+     ncount <- nrow(users_filtered)
+     if(ncount >0){
+         tsui::userRight_upload(app_id = app_id,data = users_filtered)
+        
+        
+        tsui::userInfo_upload(data = users_filtered,app_id = app_id)
+        
+        pop_notice(paste0('上传',ncount,"条用户记录！"))
+        
+     }else{
+        pop_notice("上述用户已全部在系统中,请确认！")
+        
+     }
+     
+     
+     
+     
+  })
+  
   
 })

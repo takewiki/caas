@@ -61,19 +61,6 @@ menu_majority <- tabItem(tabName = "majority",
                                           )
                                           ))
                                           
-                                        )),
-                                        tabPanel('用户管理报表',tagList(
-                                           fluidRow(column(4,box(
-                                             title = "操作区域", width = NULL, solidHeader = TRUE, status = "primary",
-                                             mdl_download_button('um_userInfo_dl','下载用户信息')
-                                           )),
-                                                    column(8, box(
-                                                      title = "报表区域", width = NULL, solidHeader = TRUE, status = "primary",
-                                                      mdl_dataTable('um_userInfo','用户信息')
-                                                    )
-                                                    ))
-                                          
-                                         
                                         ))
                                         
                                         
