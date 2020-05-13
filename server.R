@@ -884,12 +884,18 @@
   run_download_xlsx('um_userInfo_dl',db_userInfoRpt(),'下载用户明细报表.xlsx')
    
   #处理千牛日志上传--------
-  files_cl <- var_files('upload_cl_batch');
+  files_cl <- var_file('upload_cl_batch');
   
   data_kflog <- eventReactive(input$cl_upload_preview,{
-     res <- nrcsrobot::read_kflogs_new(files = files_cl())
+     res <- nrcsrobot::read_kflog2_new(file = files_cl())
      res$FUser <-user_info()$Fuser
      res$FUploadDate <-tsdo::getDate()
+     return(res)
+  })
+  #获取日志时间
+  data_kflog_date <- reactive({
+     data <- data_kflog()
+     res <- data$log_date[1]
      return(res)
   })
   
@@ -909,8 +915,21 @@
   #上传服务器
   observeEvent(input$cl_upload_done,{
      
-     tsda::db_writeTable(conn=conn,table_name = 't_kf_log',r_object = data_kflog(),append = T)
-     pop_notice(paste0("上传了",nrow(data_kflog()),"条记录"))
+     startDate <- data_kflog_date()
+     print(startDate)
+     FUser <-user_info()$Fuser
+     print(FUser)
+     is_new <- caaspkg::is_newQianNiu_log(conn = conn,FUser = FUser,FDate = startDate)
+     if(is_new){
+        tsda::db_writeTable(conn=conn,table_name = 't_kf_log',r_object = data_kflog(),append = T)
+        pop_notice(paste0("上传了",nrow(data_kflog()),"条记录"))
+        
+     }else{
+       ncount <- caaspkg::getQN_logCount_byCspName(conn = conn,FUser = FUser,FDate = startDate) 
+       pop_notice(paste0("用户",FUser,"已经在",startDate,"上传了",ncount,"条千牛日志！"))
+     }
+     
+
      
      
      
@@ -957,4 +976,26 @@
      run_dataTable2('um_qnInfo2',db_qnRpt2())
      run_download_xlsx('um_qnInfo_dl2',db_qnRpt2(),'下载千牛日志汇总报表.xlsx')
   })
+  
+  #处理日志信息
+  logQuery_dates <-var_dateRange('logQuery_dates')
+  
+  data_logQuery <- eventReactive(input$logQuery_preview,{
+     dates <-logQuery_dates()
+     startDate <- as.character(dates[1])
+     endDate <- as.character(dates[2])
+     FUser <-user_info()$Fuser
+     res <- caaspkg::getQN_log_byCspName(conn=conn,FUser = FUser,FStartDate = startDate,FEndDate = endDate)
+     names(res) <-c('导购','日期','记录数')
+     return(res)
+     
+  })
+  
+  observeEvent(input$logQuery_preview,{
+     run_dataTable2('logQuery_dataShow',data = data_logQuery())
+     run_download_xlsx('logQuery_dl',data = data_logQuery(),filename = '千牛日志上传历史.xlsx')
+   
+     
+  })
+  
 })

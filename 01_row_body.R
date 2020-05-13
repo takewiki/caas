@@ -199,7 +199,7 @@ menu_row <- tabItem(tabName = "row",
                                           column(4,   box(
                                             title = "日志操作区", width = NULL, solidHeader = TRUE, status = "primary",
                                             
-                                            mdl_files('upload_cl_batch','上传千牛日志文件',fileType = '.txt'),
+                                            mdl_file('upload_cl_batch','上传千牛日志文件',fileType = '.txt'),
                                             actionButton('cl_upload_preview','预览日志'),
                                             actionButton('cl_upload_done','上传服务器')
                                           )),
@@ -210,7 +210,25 @@ menu_row <- tabItem(tabName = "row",
                                                    mdl_dataTable('dt_cl_batch')
                                                  )
                                                  
-                                                 ))))
+                                                 )))),
+                               tabPanel("日志历史记录", 
+                                        tagList(fluidRow(
+                                          column(4,   box(
+                                            title = "日志操作区", width = NULL, solidHeader = TRUE, status = "primary",
+                                            
+                                            mdl_dateRange('logQuery_dates','查询范围',startDate = Sys.Date()-30,endDate = Sys.Date()),
+                                            actionButton(inputId = 'logQuery_preview','预览日志'),
+                                            mdl_download_button('logQuery_dl','下载日志历史')
+                                          )),
+                                          column(8,
+                                                 box(
+                                                   title = "日志预览区", width = NULL, solidHeader = TRUE, status = "primary",
+                                                   
+                                                   mdl_dataTable('logQuery_dataShow')
+                                                 )
+                                                 
+                                          ))))
+                               
                                
                                
                              )),
