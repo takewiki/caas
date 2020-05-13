@@ -200,6 +200,7 @@ menu_row <- tabItem(tabName = "row",
                                             title = "日志操作区", width = NULL, solidHeader = TRUE, status = "primary",
                                             
                                             mdl_file('upload_cl_batch','上传千牛日志文件',fileType = '.txt'),
+                                            textInput('cl_status','数据上传状态:','准备中'),
                                             actionButton('cl_upload_preview','预览日志'),
                                             actionButton('cl_upload_done','上传服务器')
                                           )),

@@ -1,6 +1,6 @@
 # 设置app标题-----
 
-app_title <-'AI汽车导购综合平台V2.8';
+app_title <-'AI汽车导购综合平台V2.9';
 
 # store data into rdbe in the rds database
 app_id <- 'caas'

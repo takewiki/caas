@@ -910,10 +910,14 @@
   
   observeEvent(input$cl_upload_preview,{
      run_dataTable2('dt_cl_batch',data_kflog_cn())
+     #添加标志
+     updateTextInput(session=session,inputId = 'cl_status',value='预览完成,请点上传服务器后等待1-3分钟')
   })
   
   #上传服务器
   observeEvent(input$cl_upload_done,{
+     
+
      
      startDate <- data_kflog_date()
      print(startDate)
@@ -931,6 +935,7 @@
      
 
      
+     updateTextInput(session,'cl_status',value='数据处理已完成...')
      
      
      
