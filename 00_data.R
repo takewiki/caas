@@ -2,6 +2,8 @@
 
 app_title <-'AI汽车导购综合平台V3.1';
 
+
+
 # store data into rdbe in the rds database
 app_id <- 'caas'
 
