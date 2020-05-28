@@ -213,7 +213,16 @@
    
    
    
-   
+   #针对相关内容进行处理
+   observeEvent(input$csp_type_general,{
+        print(input$csp_type_general)
+      
+         toggle('csp_sel_carType')
+      
+
+   })
+
+
    #1.2添加业务对象-------
    msg2 <-reactive({
       #强制对输入的内容转化为大写字母
@@ -228,8 +237,15 @@
          print('select cartype:')
          print(var_type)
       }
+      if (input$csp_type_general){
+         #如果是通用问题
+         res <-msg
+      }else{
+         #如果是非通用问题，添加车型
+         res <- tsdo::str_add(msg,var_type,TRUE)
+      }
       
-      res <- tsdo::str_add(msg,var_type,TRUE)
+      
       #增加测试点
       print('cartype res:')
       print(res)

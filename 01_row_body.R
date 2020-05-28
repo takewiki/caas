@@ -17,9 +17,13 @@ menu_row <- tabItem(tabName = "row",
                                               )
                                               
                                               ,
-                                              fluidRow(column(12,uiOutput('csp_sel_carType_placeHolder'),
+                                              fluidRow(column(8,uiOutput('csp_sel_carType_placeHolder'),
                                                               #加载复制功能
-                                                              try(rclipboardSetup()))),
+                                                              try(rclipboardSetup())),
+                                                              column(4,
+                                                                     materialSwitch(inputId = "csp_type_general", 
+                                                                                    label = "通用问题", value = FALSE, 
+                                                                                    status = "success"))),
                                               
                                               
                                               uiOutput('scp_tip'),
