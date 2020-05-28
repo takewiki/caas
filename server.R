@@ -229,7 +229,7 @@
          print(var_type)
       }
       
-      res <- tsdo::str_add(msg,var_type)
+      res <- tsdo::str_add(msg,var_type,TRUE)
       #增加测试点
       print('cartype res:')
       print(res)
