@@ -30,6 +30,16 @@ menu_column <- tabItem(tabName = "column",
                                                
                                                
                                              ))))),
+                                  tabPanel("审核知识点", 
+                                           tagList(fluidRow(
+                                             column(12,   box(
+                                               title = "今日处理区", width = NULL, solidHeader = TRUE, status = "primary",
+                                               
+                                               actionButton('tcp_getKKCheckList','获取待审知识点列表'),
+                                               uiOutput('tcp_kkApprovalList')
+                                               
+                                               
+                                             ))))),
                                   tabPanel("可修改答案问题清单", 
                                            tagList(fluidRow(
                                              column(12,   box(

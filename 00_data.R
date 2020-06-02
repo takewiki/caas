@@ -1,15 +1,18 @@
 # 设置app标题-----
 
-app_title <-'AI汽车导购综合平台V3.4';
+app_title <-'AI汽车导购综合平台V3.5';
 #后续针对功能进行改进
 #1.增加try-catch机制，让服务进程不容易损坏
 #2.增加负载均衡,暂时使用3个服务器
+#3.增加对知识库的支持
 
 
 
 
 # store data into rdbe in the rds database
 app_id <- 'caas'
+
+conn_kms <- wulair::conn()
 
 tsp_name <- '巴豆'
 

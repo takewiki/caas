@@ -20,6 +20,7 @@ library(csppkg)
 library(nscartypepkg);
 library(caaspkg);
 library(nrcsrobot);
+library(wulair);
 
 # 设置引入页-----
 source('00_data.R',encoding = 'utf-8');

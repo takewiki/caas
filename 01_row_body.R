@@ -36,8 +36,10 @@ menu_row <- tabItem(tabName = "row",
                                                 column(12,
                                                        #actionButton('scp_submit','查询知识库',icon('robot'))
                                                        actionBttn('scp_submit','查询知识库',icon =icon('robot'), color = 'primary',style = 'jelly'),
+                                                       
                                                        #actionButton('oper_support5D','提交内部支持')
                                                        actionBttn('oper_support5D','提交内部支持',icon =icon('hands-helping'), color = 'warning',style = 'jelly')
+                                                       
                                                 )
                                                 
                                               ),
@@ -87,7 +89,16 @@ menu_row <- tabItem(tabName = "row",
                                                                           #actionButton('add_info','添加留资',icon('info-circle'))
                                                                           actionBttn('add_info','添加留资语',icon =icon('info-circle'), color = 'success',style = 'jelly',size = 'md')
                                                                           
-                                                                        ))
+                                                                        )),
+                                                                     tabPanel(title = '知识点',tagList(
+                                                                       selectInput("msg_info", "知识类型:",
+                                                                                   c('通用' = "通用",
+                                                                                     "车型固定内容" = "车型固定内容",
+                                                                                     "车型活动内容" = "车型活动内容")),
+                                                                       
+                                                                       actionBttn('scp_pushKK','提交知识点',icon =icon('robot'), color = 'primary',style = 'jelly')
+                                                                       
+                                                                     ))
                                                                         
                                                                         
                                                                         

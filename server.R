@@ -1078,4 +1078,18 @@
   })
   
   
+  #知识点更新----------
+  var_new_kc <- var_text('kc_new_name')
+  var_new_kn <- var_text('kn_new_name')
+  #var_new_kk <- var_text('kk_new_name')
+  observeEvent(input$kn_createOne,{
+     try({
+        wulair::kn_create(conn = conn_kms,app_id = app_id,kc_name = var_new_kc(),kn_name = var_new_kn())
+        
+     })
+    
+     #wulair::kk_create(conn = conn_kms,app_id = app_id,kn_name = var_new_kn(),kk_name = var_new_kk())
+  })
+
+  
 })
