@@ -256,10 +256,21 @@
    #1.3设置相似问-----------
    ques_tip <- reactive({
       keyword <-msg2()
-      res <- ai_tip(keyword,3)
-      #针对进行处理
-      print('tip:')
-      print(res)
+      #增加容错处理
+      #res <- try(ai_tip(keyword,3))'
+      res <- tryCatch({
+         res <- ai_tip(keyword,3)
+      }, warning = function(w) {
+         res <- "warning"
+      }, error = function(e) {
+         res <- "知识库无相似问题"
+      }, finally = {
+         #return(res)
+      })
+      # #针对进行处理
+      # print('tip:')
+      # print(tsdo::left(as.character(res[1])),10)
+      # print(length(res))
       res <- unique(c(keyword,res))
       res <-vect_as_list(res)
       #print(res)
@@ -269,6 +280,11 @@
    })
    #1.3.1设置相似问结果显示-----
    output$scp_tip <- renderUI({
+      
+      #test 
+      #print('ques_tip_test:')
+      print(paste0('ques_tip_test:',ques_tip()))
+      
       mdl_ListChoose1(id='scp_mgsinput3',label = '相似问提示',choiceNames = ques_tip(),choiceValues = ques_tip(),selected = msg2())
    })
    
