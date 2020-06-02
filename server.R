@@ -317,7 +317,23 @@
    #1.5查询知识库--------
    data <- eventReactive(input$scp_submit,{
       keyword <- msg3()
-      res =ai2(keyword,3,0.75,0.85)
+      #增加对数据的容错处理
+      #res =ai2(keyword,3,0.75,0.85)
+      
+      res <- tryCatch({
+         res <- ai2(keyword,3,0.75,0.85)
+      }, warning = function(w) {
+         res <- "warning"
+      }, error = function(e) {
+         #res <-list()
+         type <-'D'
+         answ <-'知识库暂无此问题'
+         res <- list(type=type,answ=answ)
+         
+      }, finally = {
+         #return(res)
+      })
+      
       # print(res)
       #分情况进行情况
       return(res)
@@ -454,7 +470,7 @@
          
          
       }else{
-         print('error')
+         updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--类型D',value = "知识库没有找到相关答案，请确认问题输入是否正确:)\n如果是英文单词，单词与单词之间请添加空格:)")
       }
       
       
