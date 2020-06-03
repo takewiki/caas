@@ -32,22 +32,27 @@ menu_majority <- tabItem(tabName = "majority",
                                           ))
                                           
                                         )),
-                                        #2020-05-13
-                                        #callation the using for perfomance 
-                                        # tabPanel('千牛日志明细报表',tagList(
-                                        #   fluidRow(column(4,box(
-                                        #     title = "操作区域", width = NULL, solidHeader = TRUE, status = "primary",
-                                        #     mdl_dateRange('um_qnDates',label = '报表日期范围选择',startDate = Sys.Date()-7,endDate = Sys.Date()),
-                                        #     actionButton('um_qnPreview','预览报表'),
-                                        #     mdl_download_button('um_qnInfo_dl','下载千牛日志明细报表')
-                                        #   )),
-                                        #   column(8, box(
-                                        #     title = "报表区域", width = NULL, solidHeader = TRUE, status = "primary",
-                                        #     mdl_dataTable('um_qnInfo','千牛日志明细报表')
-                                        #   )
-                                        #   ))
-                                        #   
-                                        # )),
+                                        
+                                        tabPanel('千牛日志明细报表',tagList(
+                                          fluidRow(column(4,box(
+                                            title = "操作区域", width = NULL, solidHeader = TRUE, status = "primary",
+                                            mdl_dateRange('um_qnDates',label = '报表日期范围选择',startDate = Sys.Date()-7,endDate = Sys.Date()),
+                                            
+                                            selectInput('um_cspUserName',
+                                                             '请选择导购员名称',
+                                                           caaspkg::getCspUserName(conn_be,app_id),
+                                                           ),
+                                            
+                                            actionButton('um_qnPreview','预览报表'),
+                                            mdl_download_button('um_qnInfo_dl','下载千牛日志明细报表')
+                                          )),
+                                          column(8, box(
+                                            title = "报表区域", width = NULL, solidHeader = TRUE, status = "primary",
+                                            mdl_dataTable('um_qnInfo','千牛日志明细报表')
+                                          )
+                                          ))
+
+                                        )),
                                         tabPanel('千牛日志汇总报表',tagList(
                                           fluidRow(column(4,box(
                                             title = "操作区域", width = NULL, solidHeader = TRUE, status = "primary",

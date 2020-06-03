@@ -1003,15 +1003,17 @@
   
   #处理千牛报表下载
   qn_dates <- var_dateRange('um_qnDates')
+  #cspUserName <- var_ListChoose1('um_cspUserName')
   db_qnRpt<- eventReactive(input$um_qnPreview,{
      
      dates <-qn_dates()
      startDate <- as.character(dates[1])
      endDate <- as.character(dates[2])
-     print(startDate)
-     print(endDate)
-     res <- caaspkg::getQianNiuRpt(conn,startDate,endDate)
-     print(nrow(res))
+     cspUser <- input$um_cspUserName
+     #print(startDate)
+     #print(endDate)
+     res <- caaspkg::getQianNiuRpt(conn,startDate,endDate,cspUser)
+     #print(nrow(res))
      return(res)
   })
   
