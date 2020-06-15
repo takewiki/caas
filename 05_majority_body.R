@@ -53,6 +53,34 @@ menu_majority <- tabItem(tabName = "majority",
                                           ))
 
                                         )),
+                                        tabPanel('千牛日志有效问',tagList(
+                                          fluidRow(column(4,box(
+                                            title = "操作区域", width = NULL, solidHeader = TRUE, status = "primary",
+                                            #选择日期
+                                            mdl_dateRange('um_qnDates_bl',label = '报表日期范围选择',startDate = Sys.Date()-7,endDate = Sys.Date()),
+                                            
+                                        
+                                            #上传黑名单
+                                            mdl_file('um_file_qnlog_bl','选择千牛日志黑名单'),
+                                            actionButton('qnlog_bl_upload','上传千牛日志黑名单至服务器'),
+                                            br(),
+                                            br(),
+                                            actionButton('um_qnlog_bl_apply','运算黑名单自动标注'),
+                                            actionButton('um_qnlog_bl_apply_reset','再次激活运算'),
+                                            br(),
+                                            br(),
+                                            actionButton('um_qnlog_bl_query','查询已运算标注日志'),
+                                            mdl_download_button('um_qnlog_bl_dl','下载已运算标注日志')
+                                           
+                                  
+                                          )),
+                                          column(8, box(
+                                            title = "报表区域", width = NULL, solidHeader = TRUE, status = "primary",
+                                            mdl_dataTable('um_qnInfo_bl','千牛日志有效问')
+                                          )
+                                          ))
+                                          
+                                        )),
                                         tabPanel('千牛日志汇总报表',tagList(
                                           fluidRow(column(4,box(
                                             title = "操作区域", width = NULL, solidHeader = TRUE, status = "primary",

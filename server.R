@@ -1124,6 +1124,74 @@
     
      #wulair::kk_create(conn = conn_kms,app_id = app_id,kn_name = var_new_kn(),kk_name = var_new_kk())
   })
+  
+  
+  #处理有效问-------
+
+  
+  #file
+  log_blackList_file <- var_file('um_file_qnlog_bl')
+  
+  observeEvent(input$qnlog_bl_upload,{
+     #file
+     file <- log_blackList_file()
+     print(file)
+     caaspkg::qnlog_blackList_writeDB(conn =conn ,file =file ) 
+     caaspkg::qnlog_blackListEq_writeDB(conn =conn ,file =file ) 
+     pop_notice('客户问题客名单已上传！')
+     
+     
+  })
+  #dates
+  var_logTag_dates <- var_dateRange('um_qnDates_bl')
+  
+  #运行打标日志
+  observeEvent(input$um_qnlog_bl_apply,{
+     shinyjs::disable('um_qnlog_bl_apply')
+     dates <-var_logTag_dates()
+     startDate <- as.character(dates[1])
+     endDate <- as.character(dates[2])
+     caaspkg::qnlog_logTagBatch_writeDB(conn = conn,
+                                        show_process = TRUE,
+                                        FStartDate = startDate,
+                                        FEndDate = endDate )
+     pop_notice('已完成日志打标运算！')
+     
+     
+     
+     
+  })
+  
+  observeEvent(input$um_qnlog_bl_apply_reset,{
+     shinyjs::enable('um_qnlog_bl_apply')
+  })
+  
+  #查询日志打标数据
+  data_logTag_selectDB <-eventReactive(input$um_qnlog_bl_query,{
+     dates <-var_logTag_dates()
+     startDate <- as.character(dates[1])
+     endDate <- as.character(dates[2])
+     res <-caaspkg::qnlog_logTag_readDB(conn = conn,FStartDate = startDate,FEndDate =endDate )
+     return(res)
+     
+     
+  })
+  
+  #查询日志打标数据
+  observeEvent(input$um_qnlog_bl_query,{
+     data <- data_logTag_selectDB()
+     
+     run_dataTable2('um_qnInfo_bl',data)
+     
+     run_download_xlsx('um_qnlog_bl_dl',data = data,filename = '千牛日志已打标.xlsx')
+     
+     
+  })
+
+  
+  
+
+
 
   
 })
