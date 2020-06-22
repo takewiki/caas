@@ -1190,8 +1190,31 @@
 
   
   
+  #处理油卡业务--------
+  observeEvent(input$scp_oilCard_backtoInput,{
+     #返回输入
+     updateTabsetPanel(session, "tabset1",
+                       selected = "输入")
+     
+  })
 
-
+  #处理油卡查询
+  observeEvent(input$scp_submit_oilCard,{
+     
+     keyword <- msg()
+     
+     data <- caaspkg::oildCard_selectDB(FKeyWord = keyword)
+     
+     run_dataTable2('scp_oilCard_dataShow',data=data)
+     #针对油卡日志处理，兼容原来的AI日志
+     answ=data.frame(FQues=keyword,FScore=1,FQuesMatch=keyword,FAnsw='油卡查询',stringsAsFactors = F)
+     #写入日志
+     icLogUpload(conn=conn,FNickName = user_info()$Fuser,FQuesText = msg(),answ = answ,index = 1,type = 'D')
+     updateTabsetPanel(session, "tabset1",
+                       selected = "油卡查询")
+     
+     
+  })
 
   
 })

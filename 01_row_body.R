@@ -36,7 +36,7 @@ menu_row <- tabItem(tabName = "row",
                                                 column(12,
                                                        #actionButton('scp_submit','查询知识库',icon('robot'))
                                                        actionBttn('scp_submit','查询知识库',icon =icon('robot'), color = 'primary',style = 'jelly'),
-                                                       
+                                                       actionBttn('scp_submit_oilCard','油卡查询',icon =icon('address-card'), color = 'primary',style = 'jelly'),
                                                        #actionButton('oper_support5D','提交内部支持')
                                                        actionBttn('oper_support5D','提交内部支持',icon =icon('hands-helping'), color = 'warning',style = 'jelly')
                                                        
@@ -194,6 +194,20 @@ menu_row <- tabItem(tabName = "row",
                                             actionBttn('show_support3','查看内部支持回复',icon =icon('list'), color = 'primary',style = 'jelly')
                                            
                                           ))))),
+                               tabPanel("油卡查询", 
+                                        tagList(fluidRow(
+                                         
+                                          column(12,   box(
+                                            title = "消息查询区", width = NULL, solidHeader = TRUE, status = "primary",
+                                            
+                                            mdl_dataTable('scp_oilCard_dataShow','显示油卡信息'),
+                                            br(),
+                                            actionBttn('scp_oilCard_backtoInput','返回到输入')
+                                            
+                                          ))
+                                          
+                                          
+                                          ))),
                                
                                tabPanel("内部支持-领答", 
                                         tagList(fluidRow(
