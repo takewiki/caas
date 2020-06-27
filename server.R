@@ -215,12 +215,27 @@
    
    #针对相关内容进行处理
    observeEvent(input$csp_type_general,{
-        print(input$csp_type_general)
+        #print(input$csp_type_general)
       
          toggle('csp_sel_carType')
       
 
    })
+   #处理油卡相关数据
+   observeEvent(input$csp_type_oilCard,{
+      #print(input$csp_type_general)
+      
+      toggle('csp_sel_carType')
+      #显示隐藏相似问
+     # toggle('scp_mgsinput3')
+     #toggle('scp_tip')
+      
+      
+     
+      
+      
+   })
+   
 
 
    #1.2添加业务对象-------
@@ -316,26 +331,41 @@
    
    #1.5查询知识库--------
    data <- eventReactive(input$scp_submit,{
-      keyword <- msg3()
-      #增加对数据的容错处理
-      #res =ai2(keyword,3,0.75,0.85)
-      
-      res <- tryCatch({
-         res <- ai2(keyword,3,0.75,0.85)
-      }, warning = function(w) {
-         res <- "warning"
-      }, error = function(e) {
-         #res <-list()
-         type <-'D'
-         answ <-'知识库暂无此问题'
-         res <- list(type=type,answ=answ)
+      if(input$csp_type_oilCard){
+         #油卡查询
+         keyword <- msg()
+         res <- caaspkg::oildCard_selectDB2(conn=conn,FKeyWord = keyword)
+         answ=data.frame(FQues=keyword,FScore=1,FQuesMatch=keyword,FAnsw='油卡查询',stringsAsFactors = F)
+         #写入日志
+         icLogUpload(conn=conn,FNickName = user_info()$Fuser,FQuesText = msg(),answ = answ,index = 1,type = 'D')
          
-      }, finally = {
-         #return(res)
-      })
-      
-      # print(res)
-      #分情况进行情况
+         
+         
+      }else{
+         #知识库查询
+         keyword <- msg3()
+         #增加对数据的容错处理
+         #res =ai2(keyword,3,0.75,0.85)
+         
+         res <- tryCatch({
+            res <- ai2(keyword,3,0.75,0.85)
+         }, warning = function(w) {
+            res <- "warning"
+         }, error = function(e) {
+            #res <-list()
+            type <-'D'
+            answ <-'知识库暂无此问题'
+            res <- list(type=type,answ=answ)
+            
+         }, finally = {
+            #return(res)
+         })
+         
+         # print(res)
+         #分情况进行情况
+        
+         
+      }
       return(res)
       
    })
@@ -407,71 +437,81 @@
       
       #加载相关内容
       req(credentials()$user_auth)
-      
       res <- data()
-      print('知识库查询内容')
-      print(res)
-      type = res$type
-      answ = res$answ
       
-      #choiceValue = answ$Answ
-      #针对确认问题的处理
-      if (type == 'A'){
-         #显示系统结果
-         # run_print('msg_print',answ)
-         # output$msg_print <- renderPrint({
-         #    cat(answ$FAnsw[1])
-         # })
-         
-         # output$scp_res_ph <-renderUI({
-         #    #info = paste(answ,input$msg_sale,sep="\n")
-         #    textAreaInput('scp_res',label = '消息输出编辑框',value = answ$FAnsw[1],rows = 3)
-         # })
-         
-         updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--类型A1',value = answ$FAnsw[1])
-         
-         #写入客服日志
-         
-         
-         icLogUpload(conn=conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = answ,index = 1,type = type,forHelp = as.integer(input$oper_support5D))
-         #写入AI查询日志
-         queryLog_upload(conn = conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = answ)
-         
-         
-         
-         
-      }else if(type =='B'){
-         updateTabsetPanel(session, "tabset1",
-                           selected = "人工审核")
-         choiceData = tsdo::vect_as_list(answ$FQues)
-         output$audit_placeHolder <-renderUI({
-            mdl_ListChoose1('audit_ques','获取知识库问题:',
-                            choiceNames = choiceData,
-                            choiceValues =list(1,2,3),selected = 1 )
-            
-         })
-         
-         
-         
-      }else if (type=='C'){
-         updateTabsetPanel(session, "tabset1",
-                           selected = "内部支持提交")
-         ques_commit(FQues = msg2(),FCspName = user_info()$Fuser,FTspName = tsp_name)
-         
-         #写入操作日志
-         icLogUpload(conn=conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = answ,index = 1,type = type)
-         #写入查询日志
-         queryLog_upload(conn = conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = answ)
-         #提示框
-         updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--类型C',value = "你的需求我们已经收到，我与我们领导沟通后第一时间回复您")
-         shinyalert::shinyalert("友情提示!", '已提交内部支持!请耐心等待或紧急催单', type = "info")
-         
-         
-         
-         
+      #处理相关内容
+      if(input$csp_type_oilCard){
+         #油卡问题
+         updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--类型D',value = res)
       }else{
-         updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--类型D',value = "知识库没有找到相关答案，请确认问题输入是否正确:)\n如果是英文单词，单词与单词之间请添加空格:)")
+         #其他问题
+         print('知识库查询内容')
+         print(res)
+         type = res$type
+         answ = res$answ
+         
+         #choiceValue = answ$Answ
+         #针对确认问题的处理
+         if (type == 'A'){
+            #显示系统结果
+            # run_print('msg_print',answ)
+            # output$msg_print <- renderPrint({
+            #    cat(answ$FAnsw[1])
+            # })
+            
+            # output$scp_res_ph <-renderUI({
+            #    #info = paste(answ,input$msg_sale,sep="\n")
+            #    textAreaInput('scp_res',label = '消息输出编辑框',value = answ$FAnsw[1],rows = 3)
+            # })
+            
+            updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--类型A1',value = answ$FAnsw[1])
+            
+            #写入客服日志
+            
+            
+            icLogUpload(conn=conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = answ,index = 1,type = type,forHelp = as.integer(input$oper_support5D))
+            #写入AI查询日志
+            queryLog_upload(conn = conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = answ)
+            
+            
+            
+            
+         }else if(type =='B'){
+            updateTabsetPanel(session, "tabset1",
+                              selected = "人工审核")
+            choiceData = tsdo::vect_as_list(answ$FQues)
+            output$audit_placeHolder <-renderUI({
+               mdl_ListChoose1('audit_ques','获取知识库问题:',
+                               choiceNames = choiceData,
+                               choiceValues =list(1,2,3),selected = 1 )
+               
+            })
+            
+            
+            
+         }else if (type=='C'){
+            updateTabsetPanel(session, "tabset1",
+                              selected = "内部支持提交")
+            ques_commit(FQues = msg2(),FCspName = user_info()$Fuser,FTspName = tsp_name)
+            
+            #写入操作日志
+            icLogUpload(conn=conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = answ,index = 1,type = type)
+            #写入查询日志
+            queryLog_upload(conn = conn,FNickName = user_info()$Fuser,FQuesText = msg3(),answ = answ)
+            #提示框
+            updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--类型C',value = "你的需求我们已经收到，我与我们领导沟通后第一时间回复您")
+            shinyalert::shinyalert("友情提示!", '已提交内部支持!请耐心等待或紧急催单', type = "info")
+            
+            
+            
+            
+         }else{
+            updateTextAreaInput(session,'scp_res',label = '消息输出编辑框--类型Z',value = "知识库没有找到相关答案，请确认问题输入是否正确:)\n如果是英文单词，单词与单词之间请添加空格:)")
+         }
       }
+      
+      
+   
       
       
       

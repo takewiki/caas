@@ -42,7 +42,8 @@ menu_row <- tabItem(tabName = "row",
                                                 column(12,
                                                        #actionButton('scp_submit','查询知识库',icon('robot'))
                                                        actionBttn('scp_submit','查询知识库',icon =icon('robot'), color = 'primary',style = 'jelly'),
-                                                       actionBttn('scp_submit_oilCard','油卡查询',icon =icon('address-card'), color = 'primary',style = 'jelly'),
+                                                       #油卡查询与机器人进行合并
+                                                       #actionBttn('scp_submit_oilCard','油卡查询',icon =icon('address-card'), color = 'primary',style = 'jelly'),
                                                        #actionButton('oper_support5D','提交内部支持')
                                                        actionBttn('oper_support5D','提交内部支持',icon =icon('hands-helping'), color = 'warning',style = 'jelly')
                                                        
