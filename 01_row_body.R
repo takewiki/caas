@@ -23,7 +23,13 @@ menu_row <- tabItem(tabName = "row",
                                                               column(4,
                                                                      materialSwitch(inputId = "csp_type_general", 
                                                                                     label = "通用问题", value = FALSE, 
-                                                                                    status = "success"))),
+                                                                                    status = "success"),
+                                                                     materialSwitch(inputId = "csp_type_oilCard", 
+                                                                                    label = "油卡查询", value = FALSE, 
+                                                                                    status = "success")
+                                                                     
+                                                                     
+                                                                     )),
                                               
                                               
                                               uiOutput('scp_tip'),
@@ -194,11 +200,20 @@ menu_row <- tabItem(tabName = "row",
                                             actionBttn('show_support3','查看内部支持回复',icon =icon('list'), color = 'primary',style = 'jelly')
                                            
                                           ))))),
-                               tabPanel("油卡查询", 
+                               tabPanel("油卡上传", 
                                         tagList(fluidRow(
                                          
-                                          column(12,   box(
-                                            title = "消息查询区", width = NULL, solidHeader = TRUE, status = "primary",
+                                          column(4,   box(
+                                            title = "油卡操作区", width = NULL, solidHeader = TRUE, status = "primary",
+                                            
+                                            mdl_file('oilCard_upload_file','请选择上传的油卡xlsx数据'),
+                                            br(),
+                                            actionButton('oilCard_upload_submit','上传服务器'),
+                                            actionButton('oilCard_upload_submit_reset','再次上传')
+                                            
+                                          )),
+                                          column(8,   box(
+                                            title = "油卡查询区", width = NULL, solidHeader = TRUE, status = "primary",
                                             
                                             mdl_dataTable('scp_oilCard_dataShow','显示油卡信息'),
                                             br(),

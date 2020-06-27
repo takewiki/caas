@@ -1205,7 +1205,7 @@
      
      data <- caaspkg::oildCard_selectDB(FKeyWord = keyword)
      
-     run_dataTable2('scp_oilCard_dataShow',data=data)
+     #run_dataTable2('scp_oilCard_dataShow',data=data)
      #针对油卡日志处理，兼容原来的AI日志
      answ=data.frame(FQues=keyword,FScore=1,FQuesMatch=keyword,FAnsw='油卡查询',stringsAsFactors = F)
      #写入日志
@@ -1215,6 +1215,22 @@
      
      
   })
+  #处理油卡上传数据
+  var_oilCard_file <- var_file('oilCard_upload_file')
+  observeEvent(input$oilCard_upload_submit,{
+     shinyjs::disable("oilCard_upload_submit")
+     file = var_oilCard_file()
+     caaspkg::oilCard_writeDB(file=file,conn=conn)
+     #查询相关数据,显示出来
+     data <- caaspkg::oildCard_selectDB_all(conn=conn)
+     run_dataTable2('scp_oilCard_dataShow',data = data)
+     pop_notice('油卡数据已更新')
+  })
+  
+  observeEvent(input$oilCard_upload_submit_reset,{
+     shinyjs::enable('oilCard_upload_submit')
+  })
+
 
   
 })
