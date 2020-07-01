@@ -215,10 +215,11 @@ menu_row <- tabItem(tabName = "row",
                                           )),
                                           column(8,   box(
                                             title = "油卡查询区", width = NULL, solidHeader = TRUE, status = "primary",
+                                            ''
                                             
-                                            mdl_dataTable('scp_oilCard_dataShow','显示油卡信息'),
-                                            br(),
-                                            actionBttn('scp_oilCard_backtoInput','返回到输入')
+                                            # mdl_dataTable('scp_oilCard_dataShow','显示油卡信息'),
+                                            # br(),
+                                            # actionBttn('scp_oilCard_backtoInput','返回到输入')
                                             
                                           ))
                                           
@@ -247,7 +248,8 @@ menu_row <- tabItem(tabName = "row",
                                             mdl_file('upload_cl_batch','上传千牛日志文件',fileType = '.txt'),
                                             textInput('cl_status','数据上传状态:','准备中'),
                                             actionButton('cl_upload_preview','预览日志'),
-                                            actionButton('cl_upload_done','上传服务器')
+                                            actionButton('cl_upload_done','上传服务器'),
+                                            actionButton('cl_upload_done_reset','再次激活上传')
                                           )),
                                           column(8,
                                                  box(

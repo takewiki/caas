@@ -1016,6 +1016,7 @@
   
   #上传服务器
   observeEvent(input$cl_upload_done,{
+     shinyjs::disable('cl_upload_done')
      
 
      
@@ -1039,6 +1040,12 @@
      
      
      
+  })
+  
+  
+  #再次激活
+  observeEvent(input$cl_upload_done_reset,{
+     shinyjs::enable('cl_upload_done')
   })
   
   #处理千牛报表下载
