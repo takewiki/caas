@@ -86,7 +86,12 @@ menu_majority <- tabItem(tabName = "majority",
                                             title = "操作区域", width = NULL, solidHeader = TRUE, status = "primary",
                                             mdl_dateRange('um_qnDates2',label = '报表日期范围选择',startDate = Sys.Date()-7,endDate = Sys.Date()),
                                             actionButton('um_qnPreview2','预览报表'),
-                                            mdl_download_button('um_qnInfo_dl2','下载千牛日志汇总报表')
+                                            mdl_download_button('um_qnInfo_dl2','下载千牛日志汇总报表'),
+                                            br(),
+                                            br(),
+                                            mdl_date('log_qa_update_date','日报按QA对更新日期'),
+                                            actionButton('log_qa_update_btn','日报QA对更新')
+                                            
                                           )),
                                           column(8, box(
                                             title = "报表区域", width = NULL, solidHeader = TRUE, status = "primary",

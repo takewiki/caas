@@ -1080,7 +1080,7 @@
      endDate <- as.character(dates[2])
      print(startDate)
      print(endDate)
-     res <- caaspkg::getQianNiu2Rpt(conn,startDate,endDate)
+     res <- caaspkg::getQianNiu2Rpt2(conn,startDate,endDate)
      print(nrow(res))
      return(res)
   })
@@ -1278,6 +1278,18 @@
      shinyjs::enable('oilCard_upload_submit')
   })
 
+   #日报按QA对更新
+    var_log_qa_update_date <- var_date('log_qa_update_date')
+   observeEvent(input$log_qa_update_btn,{
+      date <-as.character(var_log_qa_update_date())
+      try({
+         caaspkg::log_qaPair_byDate(conn=conn,log_date = date)
+      })
+      
+      pop_notice(paste0(date,'日志按天已执行QA对已更新!'))
+    
+      
+   })
 
   
 })
