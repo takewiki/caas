@@ -22,7 +22,7 @@ menu_book <- tabItem(tabName = "book",
                                              column(width = 8,
                                                     box(
                                                       title = "车型数据预览", width = NULL, solidHeader = TRUE, status = "primary",
-                                                      mdl_dataTable('pre_carType')
+                                                      div(style = 'overflow-x: scroll', mdl_dataTable('pre_carType'))
                                                     )
                                              )
                                            )

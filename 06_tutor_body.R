@@ -13,7 +13,7 @@ menu_tutor <- tabItem(tabName = "tutor",
                                         column(8, box(
                                           title = "报表区域", width = NULL, solidHeader = TRUE, status = "primary",
                                           
-                                          mdl_dataTable('usr_info','新增用户列表')
+                                          div(style = 'overflow-x: scroll',mdl_dataTable('usr_info','新增用户列表'))
                                         )
                                         ))
                                         
@@ -25,7 +25,7 @@ menu_tutor <- tabItem(tabName = "tutor",
                                         )),
                                         column(8, box(
                                           title = "用户区域", width = NULL, solidHeader = TRUE, status = "primary",
-                                          mdl_dataTable('um_userInfo','用户信息')
+                                          div(style = 'overflow-x: scroll',mdl_dataTable('um_userInfo','用户信息'))
                                         )
                                         ))
                                         

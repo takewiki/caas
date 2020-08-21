@@ -13,7 +13,7 @@ menu_majority <- tabItem(tabName = "majority",
                                           column(8, box(
                                             title = "报表区域", width = NULL, solidHeader = TRUE, status = "primary",
                                             
-                                            mdl_dataTable('um_cspInfo','智能导购报表')
+                                            div(style = 'overflow-x: scroll',mdl_dataTable('um_cspInfo','智能导购报表'))
                                           )
                                           ))
                                           
@@ -27,7 +27,7 @@ menu_majority <- tabItem(tabName = "majority",
                                           )),
                                           column(8, box(
                                             title = "报表区域", width = NULL, solidHeader = TRUE, status = "primary",
-                                            mdl_dataTable('um_tspInfo','内部支持报表')
+                                            div(style = 'overflow-x: scroll',mdl_dataTable('um_tspInfo','内部支持报表'))
                                           )
                                           ))
                                           
@@ -48,7 +48,7 @@ menu_majority <- tabItem(tabName = "majority",
                                           )),
                                           column(8, box(
                                             title = "报表区域", width = NULL, solidHeader = TRUE, status = "primary",
-                                            mdl_dataTable('um_qnInfo','千牛日志明细报表')
+                                            div(style = 'overflow-x: scroll',mdl_dataTable('um_qnInfo','千牛日志明细报表'))
                                           )
                                           ))
 
@@ -76,7 +76,7 @@ menu_majority <- tabItem(tabName = "majority",
                                           )),
                                           column(8, box(
                                             title = "报表区域", width = NULL, solidHeader = TRUE, status = "primary",
-                                            mdl_dataTable('um_qnInfo_bl','千牛日志有效问')
+                                            div(style = 'overflow-x: scroll', mdl_dataTable('um_qnInfo_bl','千牛日志有效问'))
                                           )
                                           ))
                                           
@@ -95,7 +95,7 @@ menu_majority <- tabItem(tabName = "majority",
                                           )),
                                           column(8, box(
                                             title = "报表区域", width = NULL, solidHeader = TRUE, status = "primary",
-                                            mdl_dataTable('um_qnInfo2','千牛日志汇总报表')
+                                            div(style = 'overflow-x: scroll', mdl_dataTable('um_qnInfo2','千牛日志汇总报表'))
                                           )
                                           ))
                                           

@@ -255,7 +255,7 @@ menu_row <- tabItem(tabName = "row",
                                                  box(
                                                    title = "日志预览区", width = NULL, solidHeader = TRUE, status = "primary",
                                                    
-                                                   mdl_dataTable('dt_cl_batch')
+                                                   div(style = 'overflow-x: scroll',mdl_dataTable('dt_cl_batch'))
                                                  )
                                                  
                                                  )))),
@@ -272,7 +272,7 @@ menu_row <- tabItem(tabName = "row",
                                                  box(
                                                    title = "日志预览区", width = NULL, solidHeader = TRUE, status = "primary",
                                                    
-                                                   mdl_dataTable('logQuery_dataShow')
+                                                   div(style = 'overflow-x: scroll',mdl_dataTable('logQuery_dataShow'))
                                                  )
                                                  
                                           ))))

@@ -1,8 +1,10 @@
 # 设置app标题-----
 
-app_title <-'AI汽车导购综合平台V4.7';
+app_title <-'AI汽车导购综合平台V4.8';
 
 #change log for caas
+#4.8
+#fix the bug
 #4.7
 #增加日志QA匹配功能
 #4.6------
