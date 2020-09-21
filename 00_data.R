@@ -1,6 +1,8 @@
 # 设置app标题-----
 
-app_title <-'AI汽车导购综合平台V4.8';
+app_title <-'AI汽车导购综合平台V5.1';
+#5.1添加打标功能
+#添加日志功能
 
 #change log for caas
 #4.8

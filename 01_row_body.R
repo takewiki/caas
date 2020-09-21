@@ -163,33 +163,40 @@ menu_row <- tabItem(tabName = "row",
                                     
                                         #endFor the tagList
                                         ),
-                               tabPanel("人工审核", 
-                                        tagList(fluidRow(
-                                          column(12, box(
-                                            title = "人工审核区", width = NULL, solidHeader = TRUE, status = "primary",
-                                            
-                                            tags$h5('千牛消息(查看):'),
-                                            verbatimTextOutput('show_msg2_ph'),
-                                            uiOutput('audit_placeHolder'),
-                                            # radioButtons("dist", "获取知识库问题:",
-                                            #              c("问题1" = "norm",
-                                            #                "问题2" = "unif",
-                                            #                "问题3" = "lnorm",
-                                            #                "问题4" = "exp"),selected = 'norm'),
-                                            #取消显示答案按纽，答案自动显示
-                                            # mdl_action_button('mnl_showAnsw','显示答案'),
-                                            #actionButton('mnl_confirm','确认选择'),
-                                            actionBttn('mnl_confirm','确认选择',icon =icon('check'), color = 'primary',style = 'jelly'),
-                                            #actionButton('oper_support2','提交内部支持'),
-                                            actionBttn('oper_support2','提交内部支持',icon =icon('hands-helping'), color = 'warning',style = 'jelly'),
-                                            #actionButton('show_support2','查看内部支持回复'),
-                                            actionBttn('show_support2','查看内部支持回复',icon =icon('list'), color = 'primary',style = 'jelly'),
-                                            br(),
-                                            tags$p('显示答案:'),
-                                            #mdl_print('mannal_showAnswer')
-                                            verbatimTextOutput('mannal_showAnswer')
-                                         
-                                          ))))),
+                               
+                               # if(1==2){
+                               #   #取消人工审核节点
+                               # tabPanel("人工审核", 
+                               #          tagList(fluidRow(
+                               #            column(12, box(
+                               #              title = "人工审核区", width = NULL, solidHeader = TRUE, status = "primary",
+                               #              
+                               #              tags$h5('千牛消息(查看):'),
+                               #              verbatimTextOutput('show_msg2_ph'),
+                               #              uiOutput('audit_placeHolder'),
+                               #              # radioButtons("dist", "获取知识库问题:",
+                               #              #              c("问题1" = "norm",
+                               #              #                "问题2" = "unif",
+                               #              #                "问题3" = "lnorm",
+                               #              #                "问题4" = "exp"),selected = 'norm'),
+                               #              #取消显示答案按纽，答案自动显示
+                               #              # mdl_action_button('mnl_showAnsw','显示答案'),
+                               #              #actionButton('mnl_confirm','确认选择'),
+                               #              actionBttn('mnl_confirm','确认选择',icon =icon('check'), color = 'primary',style = 'jelly'),
+                               #              #actionButton('oper_support2','提交内部支持'),
+                               #              actionBttn('oper_support2','提交内部支持',icon =icon('hands-helping'), color = 'warning',style = 'jelly'),
+                               #              #actionButton('show_support2','查看内部支持回复'),
+                               #              actionBttn('show_support2','查看内部支持回复',icon =icon('list'), color = 'primary',style = 'jelly'),
+                               #              br(),
+                               #              tags$p('显示答案:'),
+                               #              #mdl_print('mannal_showAnswer')
+                               #              verbatimTextOutput('mannal_showAnswer')
+                               #           
+                               #            )))))
+                               #   },
+                               
+                               
+                               
                                tabPanel("内部支持提交", 
                                         tagList(fluidRow(
                                           column(12,   box(

@@ -348,7 +348,9 @@
          #res =ai2(keyword,3,0.75,0.85)
          
          res <- tryCatch({
-            res <- ai2(keyword,3,0.75,0.85)
+            # res <- ai2(keyword,3,0.75,0.85)
+            #取消B类型进行人工审核
+            res <- ai2(keyword,3,0.85,0.85)
          }, warning = function(w) {
             res <- "warning"
          }, error = function(e) {
@@ -1190,18 +1192,32 @@
      
   })
   #dates
-  var_logTag_dates <- var_dateRange('um_qnDates_bl')
+  #取消日志范围的选择
+  #var_logTag_dates <- var_dateRange('um_qnDates_bl')
+  #统一使用此日期
+  var_log_qa_update_date <- var_date('log_qa_update_date')
   
   #运行打标日志
   observeEvent(input$um_qnlog_bl_apply,{
      shinyjs::disable('um_qnlog_bl_apply')
-     dates <-var_logTag_dates()
-     startDate <- as.character(dates[1])
-     endDate <- as.character(dates[2])
+     #dates <-var_logTag_dates()
+     startDate <- as.character(var_log_qa_update_date())
+     endDate <- as.character(var_log_qa_update_date())
+     #获取日期及执行QA对
+     date <-as.character(var_log_qa_update_date())
+     try({
+        caaspkg::log_qaPair_byDate(conn=conn,log_date = date)
+        #形成qa对，进一步处理
+        caaspkg::log_qna_combined_byDate(conn=conn,log_date = date)
+     })
+     
+     #针对数据进行打标
      caaspkg::qnlog_logTagBatch_writeDB(conn = conn,
-                                        show_process = TRUE,
+                                        show_process = FALSE,
                                         FStartDate = startDate,
                                         FEndDate = endDate )
+     #针对数据进行处理，更新记录
+     caaspkg::log_qna_updatedLogTag(conn=conn)
      pop_notice('已完成日志打标运算！')
      
      
@@ -1215,9 +1231,11 @@
   
   #查询日志打标数据
   data_logTag_selectDB <-eventReactive(input$um_qnlog_bl_query,{
-     dates <-var_logTag_dates()
-     startDate <- as.character(dates[1])
-     endDate <- as.character(dates[2])
+     # dates <-var_logTag_dates()
+     # startDate <- as.character(dates[1])
+     # endDate <- as.character(dates[2])
+     startDate <- as.character(var_log_qa_update_date())
+     endDate <- as.character(var_log_qa_update_date())
      res <-caaspkg::qnlog_logTag_readDB(conn = conn,FStartDate = startDate,FEndDate =endDate )
      return(res)
      
@@ -1279,17 +1297,123 @@
   })
 
    #日报按QA对更新
-    var_log_qa_update_date <- var_date('log_qa_update_date')
-   observeEvent(input$log_qa_update_btn,{
-      date <-as.character(var_log_qa_update_date())
-      try({
-         caaspkg::log_qaPair_byDate(conn=conn,log_date = date)
-      })
+
+   # observeEvent(input$log_qa_update_btn,{
+   #    date <-as.character(var_log_qa_update_date())
+   #    try({
+   #       caaspkg::log_qaPair_byDate(conn=conn,log_date = date)
+   #       #形成qa对，进一步处理
+   #       caaspkg::log_qna_combined_byDate(conn=conn,log_date = date)
+   #    })
+   #    
+   #    pop_notice(paste0(date,'日志按天已执行QA对已更新!'))
+   #  
+   #    
+   # })
+  #针对打标数据进行处理
+  
+  observe({
+     
+      input$log_qa_tagging_date
+      log_date <- as.character(input$log_qa_tagging_date)
+      print(log_date)
       
-      pop_notice(paste0(date,'日志按天已执行QA对已更新!'))
-    
       
-   })
+      get_tagging_data <- function(){
+         
+         sql_sel <- paste0("select FInterId, FUser,log_date,FLog,FIs_valid,FCategory from t_kf_logCombined
+where log_date='",log_date,"' and FIsA='FALSE'  and  len(isnull(FIs_valid,''))=0 ")
+         res <- tsda::sql_select(conn,sql_sel)
+         
+         
+      }
+      
+      tagging.update.callback <- function(data, olddata, row) {
+         query <- paste0("UPDATE t_kf_logCombined SET ",
+                        
+                         "FIs_valid = '", as.character(data[row,]$FIs_valid), "', ",
+                         "FCategory = '", data[row,]$FCategory, "' ",
+                         
+                         "WHERE FInterId = ", data[row,]$FInterId)
+         print(query) # For debugging
+         #dbSendQuery(conn, query)
+         tsda::sql_update(conn = conn,sql_str = query)
+         return(get_tagging_data())
+      }
+      
+      dtedit2(input, output,
+              name = 'log_qa_tagging_ui',
+              thedata = get_tagging_data(),
+              edit.cols = c('FLog', 'FIs_valid', 'FCategory'),
+              edit.label.cols = c('问题', '是否有效', '分类'),
+              input.types = c(FLog='textAreaInput'),
+              #input.choices = list(Authors = unique(unlist(books$Authors))),
+              view.cols = c('FInterId','FUser','log_date','FLog','FIs_valid','FCategory'),
+              view.captions = c('内码','导购员','日志日期','问题Q','是否有效','业务分类'),
+              callback.update = tagging.update.callback,
+              callback.insert = tagging.update.callback,
+              callback.delete = tagging.update.callback,
+              show.delete = F,
+              show.update = T,
+              show.insert = F,
+              show.copy = F,label.edit = '在线打标',title.edit = '在线打标窗口')
+      
+     
+  })
+  
+  #构建打标ui界面
+  
+     observeEvent(input$tagging_done,{
+        
+        log_date <- as.character(input$log_qa_tagging_date)
+        #print(log_date)
+        
+        
+        get_tagging_done <- function(){
+           
+           sql_sel <- paste0("select FInterId, FUser,log_date,FLog,FIs_valid,FCategory from t_kf_logCombined
+where log_date='",log_date,"' and FIsA='FALSE'  and  len(isnull(FIs_valid,'')) > 0 ")
+           res <- tsda::sql_select(conn,sql_sel)
+           
+           
+        }
+        
+        data <- get_tagging_done()
+        names(data) <-c('内码','导购员','日志日期','问题Q','是否有效','业务分类')
+        
+        run_dataTable2('tagging_done_dataShow',data = data)
+        
+        
+        
+     })
+      #全部已打标数据
+     observeEvent(input$tagging_all,{
+        
+        log_date <- as.character(input$log_qa_tagging_date)
+        #print(log_date)
+        
+        
+        get_tagging_all <- function(){
+           
+           sql_sel <- paste0("select FInterId, FUser,log_date,FLog,FIs_valid,FCategory from t_kf_logCombined
+where log_date='",log_date,"' and FIsA='FALSE'  ")
+           res <- tsda::sql_select(conn,sql_sel)
+           
+           
+        }
+        
+        data <- get_tagging_all()
+        names(data) <-c('内码','导购员','日志日期','问题Q','是否有效','业务分类')
+        
+        run_dataTable2('tagging_all_dataShow',data = data)
+        
+        
+        
+     })
+     
+     
+  
+ 
 
   
 })
