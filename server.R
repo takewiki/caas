@@ -1321,8 +1321,15 @@
       
       get_tagging_data <- function(){
          
-         sql_sel <- paste0("select FInterId, FUser,log_date,FLog,FIs_valid,FCategory from t_kf_logCombined
-where log_date='",log_date,"' and FIsA='FALSE'  and  len(isnull(FIs_valid,''))=0 ")
+         sql_sel <- paste0("SELECT   [FInterId]
+      ,[FUser]
+      ,[log_date]
+      ,[FQues]
+      ,[FAnsw]
+      ,[FIs_valid]
+      ,[FCategory]
+  FROM  [vw_kf_logCombined_QA] 
+where log_date='",log_date,"'   and  len(isnull(FIs_valid,''))=0 ")
          res <- tsda::sql_select(conn,sql_sel)
          
          
@@ -1344,12 +1351,12 @@ where log_date='",log_date,"' and FIsA='FALSE'  and  len(isnull(FIs_valid,''))=0
       dtedit2(input, output,
               name = 'log_qa_tagging_ui',
               thedata = get_tagging_data(),
-              edit.cols = c('FLog', 'FIs_valid', 'FCategory'),
-              edit.label.cols = c('问题', '是否有效', '分类'),
-              input.types = c(FLog='textAreaInput'),
+              edit.cols = c('FQues','FAnsw', 'FIs_valid', 'FCategory'),
+              edit.label.cols = c('问题Q','答案A', '是否有效', '分类'),
+              input.types = c(FQues='textAreaInput',FAnsw='textAreaInput'),
               #input.choices = list(Authors = unique(unlist(books$Authors))),
-              view.cols = c('FInterId','FUser','log_date','FLog','FIs_valid','FCategory'),
-              view.captions = c('内码','导购员','日志日期','问题Q','是否有效','业务分类'),
+              view.cols = c('FInterId','FUser','log_date','FQues','FAnsw','FIs_valid','FCategory'),
+              view.captions = c('内码','导购员','日志日期','问题Q','答案A','是否有效','业务分类'),
               callback.update = tagging.update.callback,
               callback.insert = tagging.update.callback,
               callback.delete = tagging.update.callback,
@@ -1371,15 +1378,22 @@ where log_date='",log_date,"' and FIsA='FALSE'  and  len(isnull(FIs_valid,''))=0
         
         get_tagging_done <- function(){
            
-           sql_sel <- paste0("select FInterId, FUser,log_date,FLog,FIs_valid,FCategory from t_kf_logCombined
-where log_date='",log_date,"' and FIsA='FALSE'  and  len(isnull(FIs_valid,'')) > 0 ")
+           sql_sel <- paste0("SELECT   [FInterId]
+      ,[FUser]
+      ,[log_date]
+      ,[FQues]
+      ,[FAnsw]
+      ,[FIs_valid]
+      ,[FCategory]
+  FROM  [vw_kf_logCombined_QA] 
+where log_date='",log_date,"'   and  len(isnull(FIs_valid,'')) > 0 ")
            res <- tsda::sql_select(conn,sql_sel)
            
            
         }
         
         data <- get_tagging_done()
-        names(data) <-c('内码','导购员','日志日期','问题Q','是否有效','业务分类')
+        names(data) <-c('内码','导购员','日志日期','问题Q','答案A','是否有效','业务分类')
         
         run_dataTable2('tagging_done_dataShow',data = data)
         
@@ -1395,21 +1409,63 @@ where log_date='",log_date,"' and FIsA='FALSE'  and  len(isnull(FIs_valid,'')) >
         
         get_tagging_all <- function(){
            
-           sql_sel <- paste0("select FInterId, FUser,log_date,FLog,FIs_valid,FCategory from t_kf_logCombined
-where log_date='",log_date,"' and FIsA='FALSE'  ")
+           sql_sel <- paste0("SELECT   [FInterId]
+      ,[FUser]
+      ,[log_date]
+      ,[FQues]
+      ,[FAnsw]
+      ,[FIs_valid]
+      ,[FCategory]
+  FROM  [vw_kf_logCombined_QA] 
+where log_date='",log_date,"' ")
            res <- tsda::sql_select(conn,sql_sel)
            
            
         }
         
         data <- get_tagging_all()
-        names(data) <-c('内码','导购员','日志日期','问题Q','是否有效','业务分类')
+        names(data) <-c('内码','导购员','日志日期','问题Q','答案A','是否有效','业务分类')
         
         run_dataTable2('tagging_all_dataShow',data = data)
         
         
         
      })
+     
+     #下载数据
+     var_log_qa_res_dates <- var_dateRange('log_qa_res_dates')
+     
+     observeEvent(input$log_qa_res_prev,{
+        dates <-var_log_qa_res_dates()
+        startDate <- as.character(dates[1])
+        endDate <- as.character(dates[2])
+        get_tagging_allRange <- function(){
+           
+           sql_sel <- paste0("SELECT   [FInterId]
+      ,[FUser]
+      ,[log_date]
+      ,[FQues]
+      ,[FAnsw]
+      ,[FIs_valid]
+      ,[FCategory]
+  FROM  [vw_kf_logCombined_QA] 
+where log_date >='",startDate,"'  and log_date <= '",endDate,"'")
+           res <- tsda::sql_select(conn,sql_sel)
+           
+           
+        }
+        
+        data <- get_tagging_allRange()
+        names(data) <-c('内码','导购员','日志日期','问题Q','答案A','是否有效','业务分类')
+        run_dataTable2('log_qa_res_datashow',data = data)
+        file_name <- paste0("打标数据下载_",startDate,"~",endDate,".xlsx")
+        run_download_xlsx('log_qa_res_dl',data = data,filename = file_name)
+        
+        
+     })
+     
+     
+ 
      
      
   

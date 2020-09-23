@@ -124,21 +124,41 @@ menu_majority <- tabItem(tabName = "majority",
                                              id = "tabset_tagging", height = "300px",
                                              tabPanel('未打标',tagList(
                                            
-                                            uiOutput('log_qa_tagging_ui'))),
+                                               div(style = 'overflow-x: scroll',uiOutput('log_qa_tagging_ui'))
+                                            
+                                            )),
                                             tabPanel('已打标',tagList(
                                               
                                               #uiOutput('log_qa_tagging_ui')
                                                actionButton('tagging_done','获取指定日期已打标数据'),
-                                               mdl_dataTable('tagging_done_dataShow')
+                                               div(style = 'overflow-x: scroll',mdl_dataTable('tagging_done_dataShow'))
                                               
                                               )),
                                             tabPanel('全部',tagList(
                                               
                                              # uiOutput('log_qa_tagging_ui')
                                               actionButton('tagging_all','获取指定日期全部数据'),
-                                              mdl_dataTable('tagging_all_dataShow')
+                                              div(style = 'overflow-x: scroll',mdl_dataTable('tagging_all_dataShow'))
                                               
-                                              )))
+                                              )),
+                                            tabPanel('下载数据',tagList(
+                                              
+                                              # uiOutput('log_qa_tagging_ui')
+                                              fluidRow(column(6,mdl_dateRange('log_qa_res_dates','选择日期范围')),
+                                                        column(3,actionButton('log_qa_res_prev','查看数据')),
+                                                        column(3,mdl_download_button('log_qa_res_dl','下载数据'))
+                                                       )
+                                             ,
+                                             fluidRow(
+                                               div(style = 'overflow-x: scroll',mdl_dataTable('log_qa_res_datashow'))
+                                             )
+                                              
+                                              
+                                            ))
+                                            
+                                            
+                                            
+                                            )
                                             
                                             
                                             
