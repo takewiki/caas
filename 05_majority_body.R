@@ -69,7 +69,7 @@ menu_majority <- tabItem(tabName = "majority",
                                             mdl_date('log_qa_update_date','有效问更新日期'),
                                             #actionButton('log_qa_update_btn','日报QA对更新'),
                                             #取消此功能
-                                            actionButton('um_qnlog_bl_apply','执行QA对&运算黑名单自动标注'),
+                                            actionButton('um_qnlog_bl_apply','执行自动配对-打标-合并'),
                                             actionButton('um_qnlog_bl_apply_reset','再次激活运算'),
                                             br(),
                                             br(),

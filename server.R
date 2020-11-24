@@ -1141,8 +1141,11 @@
      print(newUser_flag)
      users_all <- data_user_add()
      users_filtered <- users_all[newUser_flag,]
+     print(users_filtered)
      ncount <- nrow(users_filtered)
      if(ncount >0){
+         # users_filtered$FSesstionCount <-0
+         # users_filtered$Fdeleted <- 0
          tsui::userRight_upload(app_id = app_id,data = users_filtered)
         
         
@@ -1208,16 +1211,18 @@
      try({
         caaspkg::log_qaPair_byDate(conn=conn,log_date = date)
         #形成qa对，进一步处理
-        caaspkg::log_qna_combined_byDate(conn=conn,log_date = date)
+        #针对数据进行打标
+        caaspkg::qnlog_logTagBatch_writeDB3(conn = conn,
+                                           show_process = FALSE,
+                                           FStartDate = startDate,
+                                           FEndDate = endDate )
+        #最后做合并
+        caaspkg::log_qna_combined_byDate3(conn=conn,log_date = date)
      })
      
-     #针对数据进行打标
-     caaspkg::qnlog_logTagBatch_writeDB(conn = conn,
-                                        show_process = FALSE,
-                                        FStartDate = startDate,
-                                        FEndDate = endDate )
+  
      #针对数据进行处理，更新记录
-     caaspkg::log_qna_updatedLogTag(conn=conn)
+     caaspkg::log_qna_updatedLogTag3(conn=conn)
      pop_notice('已完成日志打标运算！')
      
      
@@ -1236,7 +1241,7 @@
      # endDate <- as.character(dates[2])
      startDate <- as.character(var_log_qa_update_date())
      endDate <- as.character(var_log_qa_update_date())
-     res <-caaspkg::qnlog_logTag_readDB(conn = conn,FStartDate = startDate,FEndDate =endDate )
+     res <-caaspkg::qnlog_logTag_readDB3(conn = conn,FStartDate = startDate,FEndDate =endDate )
      return(res)
      
      
@@ -1328,7 +1333,7 @@
       ,[FAnsw]
       ,[FIs_valid]
       ,[FCategory]
-  FROM  [vw_kf_logCombined_QA] 
+  FROM  [vw_kf_logCombined_QA3] 
 where log_date='",log_date,"'   and  len(isnull(FIs_valid,''))=0 ")
          res <- tsda::sql_select(conn,sql_sel)
          
@@ -1336,12 +1341,15 @@ where log_date='",log_date,"'   and  len(isnull(FIs_valid,''))=0 ")
       }
       
       tagging.update.callback <- function(data, olddata, row) {
-         query <- paste0("UPDATE t_kf_logCombined SET ",
+         query <- paste0("UPDATE t_kf_logCombined3 SET ",
                         
                          "FIs_valid = '", as.character(data[row,]$FIs_valid), "', ",
                          "FCategory = '", data[row,]$FCategory, "' ",
                          
-                         "WHERE FInterId = ", data[row,]$FInterId)
+                         "WHERE FInterId = ", data[row,]$FInterId
+                         
+                         
+                         )
          print(query) # For debugging
          #dbSendQuery(conn, query)
          tsda::sql_update(conn = conn,sql_str = query)
@@ -1385,7 +1393,7 @@ where log_date='",log_date,"'   and  len(isnull(FIs_valid,''))=0 ")
       ,[FAnsw]
       ,[FIs_valid]
       ,[FCategory]
-  FROM  [vw_kf_logCombined_QA] 
+  FROM  [vw_kf_logCombined_QA3] 
 where log_date='",log_date,"'   and  len(isnull(FIs_valid,'')) > 0 ")
            res <- tsda::sql_select(conn,sql_sel)
            
@@ -1416,7 +1424,7 @@ where log_date='",log_date,"'   and  len(isnull(FIs_valid,'')) > 0 ")
       ,[FAnsw]
       ,[FIs_valid]
       ,[FCategory]
-  FROM  [vw_kf_logCombined_QA] 
+  FROM  [vw_kf_logCombined_QA3] 
 where log_date='",log_date,"' ")
            res <- tsda::sql_select(conn,sql_sel)
            
@@ -1448,7 +1456,7 @@ where log_date='",log_date,"' ")
       ,[FAnsw]
       ,[FIs_valid]
       ,[FCategory]
-  FROM  [vw_kf_logCombined_QA] 
+  FROM  [vw_kf_logCombined_QA3] 
 where log_date >='",startDate,"'  and log_date <= '",endDate,"'")
            res <- tsda::sql_select(conn,sql_sel)
            

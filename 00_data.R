@@ -1,6 +1,8 @@
 # 设置app标题-----
 
-app_title <-'AI汽车导购综合平台V5.2';
+app_title <-'AI汽车导购综合平台V5.3';
+#5.3
+# change the logical to pair-tagging_combine from  pct
 #5.2
 #增加打印的答案显示
 #增加打标的功能下载
