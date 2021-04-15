@@ -1,4 +1,4 @@
-
+options(shiny.maxRequestSize=50*1024^2)
 
 #shinyserver start point----
  shinyServer(function(input, output,session) {

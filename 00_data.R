@@ -1,8 +1,10 @@
 # 设置app标题-----
 
 
-app_title <-'AI汽车导购综合平台V5.3';
-
+app_title <-'AI汽车导购综合平台V5.4';
+#5.4
+#针对软件进行压力测试
+# 修改附件最大上传量至50M
 #5.3
 # change the logical to pair-tagging_combine from  pct
 #5.2
